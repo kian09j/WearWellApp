@@ -14,6 +14,7 @@ import { CpwCard } from './CpwCard'
 import { NudgeCard } from './NudgeCard'
 import { useNudges } from './useNudges'
 import { WearHistory } from './WearHistory'
+import { WishlistPanel } from './WishlistPanel'
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -28,7 +29,7 @@ export function ItemDetailScreen() {
   const { id } = useParams()
   const item = useItem(id)
   const wears = useWears()
-  const back = useBack()
+  const back = useBack(item?.kind === 'wishlist' ? '/before-you-buy' : '/wardrobe')
   const toast = useToast()
   const today = useToday()
   const nudge = useNudges()?.byItem.get(id ?? '')
@@ -101,7 +102,9 @@ export function ItemDetailScreen() {
           )}
         </p>
 
-        {item.placeholder && (
+        {item.kind === 'wishlist' && <p className="mt-3 inline-block rounded-full bg-tint-bez px-3 py-1 text-[13px] font-semibold">{t('wishlist.badge')}</p>}
+
+        {item.placeholder && item.kind === 'owned' && (
           <div className="mt-5 rounded-[22px] bg-tint-maslo p-5">
             <p className="text-[15px] text-ink/85">{t('item.placeholderHint')}</p>
             <Link
@@ -112,6 +115,8 @@ export function ItemDetailScreen() {
             </Link>
           </div>
         )}
+
+        {item.kind === 'wishlist' && <WishlistPanel item={item} />}
 
         {item.kind === 'owned' && <CpwCard item={item} wears={stat?.count ?? 0} lastWorn={stat?.last} />}
 
@@ -128,7 +133,7 @@ export function ItemDetailScreen() {
           {item.size && <Fact label={t('item.size')}>{item.size}</Fact>}
           {item.condition && <Fact label={t('item.condition')}>{t(`conditions.${item.condition}`)}</Fact>}
           <Fact label={t('item.seasons')}>{seasons}</Fact>
-          <Fact label={t('item.status')}>{t(`statuses.${item.status}`)}</Fact>
+          {item.kind === 'owned' && <Fact label={t('item.status')}>{t(`statuses.${item.status}`)}</Fact>}
           {item.status === 'sold' && item.sale && (
             <Fact label={t('item.sold')}>{t('item.soldFor', { amount: formatMoney(item.sale), date: formatDate(item.sale.date, 'dayMonth') })}</Fact>
           )}
@@ -153,9 +158,11 @@ export function ItemDetailScreen() {
           </section>
         )}
 
-        <Button variant="quiet" className="mt-8 text-muted" icon={<Trash2 size={17} aria-hidden="true" />} onClick={remove}>
-          {t('item.delete')}
-        </Button>
+        {item.kind === 'owned' && (
+          <Button variant="quiet" className="mt-8 text-muted" icon={<Trash2 size={17} aria-hidden="true" />} onClick={remove}>
+            {t('item.delete')}
+          </Button>
+        )}
       </div>
     </>
   )

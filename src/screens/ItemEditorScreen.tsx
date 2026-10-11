@@ -11,6 +11,8 @@ import { Button } from '../ui/Button'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Field, Select, TextArea, TextInput } from '../ui/fields'
 import { CategoryPicker, ColourPicker, SeasonPicker } from '../ui/pickers'
+import { nearestFrequency, WEAR_FREQUENCIES, type WearFrequency } from '../domain/buying'
+import { frequencyLabel } from './BeforeYouBuyScreen'
 import { TopBar, useBack } from '../ui/TopBar'
 import { useToast } from '../ui/Toast'
 
@@ -33,6 +35,7 @@ interface Draft {
   notes: string
   salePrice: string
   saleDate: string
+  wearsPerMonth: WearFrequency
 }
 
 function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
@@ -52,6 +55,7 @@ function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
     notes: item.notes ?? '',
     salePrice: item.sale ? String(item.sale.amount).replace('.', ',') : '',
     saleDate: item.sale?.date ?? '',
+    wearsPerMonth: nearestFrequency(item.wishlist?.wearsPerMonth ?? 4),
   }
 }
 
@@ -161,6 +165,7 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
           : undefined,
       photoId,
       placeholder: false,
+      wishlist: item.kind === 'wishlist' ? { ...item.wishlist, wearsPerMonth: draft.wearsPerMonth } : item.wishlist,
     })
     toast(t('editor.saved'))
     back()
@@ -169,7 +174,7 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
   return (
     <>
       <TopBar
-        title={t('editor.editTitle')}
+        title={item.kind === 'wishlist' ? t('editor.editWishlistTitle') : t('editor.editTitle')}
         onBack={() => (dirty ? setConfirmDiscard(true) : back())}
         backLabel={t('common.cancel')}
         backIcon={<X size={24} aria-hidden="true" />}
@@ -267,9 +272,23 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
           </Field>
         </div>
 
-        <Field label={t('editor.purchaseDate')} optional>
-          {(p) => <TextInput {...p} type="date" max={today()} value={draft.purchaseDate} onChange={(e) => update('purchaseDate', e.target.value)} />}
-        </Field>
+        {item.kind === 'wishlist' ? (
+          <Field label={t('wishlist.wearsPerMonth')}>
+            {(p) => (
+              <Select {...p} value={draft.wearsPerMonth} onChange={(e) => update('wearsPerMonth', nearestFrequency(Number(e.target.value)))}>
+                {WEAR_FREQUENCIES.map((f) => (
+                  <option key={f} value={f}>
+                    {t(frequencyLabel(f))}
+                  </option>
+                ))}
+              </Select>
+            )}
+          </Field>
+        ) : (
+          <Field label={t('editor.purchaseDate')} optional>
+            {(p) => <TextInput {...p} type="date" max={today()} value={draft.purchaseDate} onChange={(e) => update('purchaseDate', e.target.value)} />}
+          </Field>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Field label={t('editor.brand')} optional>
@@ -282,6 +301,8 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
           </Field>
         </div>
 
+        {item.kind === 'owned' && (
+        <>
         <Field label={t('editor.condition')} optional>
           {(p) => (
             <Select {...p} value={draft.condition} onChange={(e) => update('condition', e.target.value as Condition | '')}>
@@ -316,6 +337,8 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
               {(p) => <TextInput {...p} type="date" max={today()} value={draft.saleDate} onChange={(e) => update('saleDate', e.target.value)} />}
             </Field>
           </div>
+        )}
+        </>
         )}
 
         <label className="flex cursor-pointer items-start gap-3 rounded-[22px] bg-card p-4 shadow-soft">

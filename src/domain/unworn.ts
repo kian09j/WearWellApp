@@ -45,12 +45,18 @@ export function addedOn(item: Pick<Item, 'createdAt'>): DateKey {
   return toDateKey(new Date(item.createdAt))
 }
 
-/** The first day that counts towards "unworn". */
-export function unwornSince(item: Pick<Item, 'createdAt'>, lastWorn: DateKey | undefined): DateKey {
-  const added = addedOn(item)
-  if (!lastWorn) return added
-  const after = addDays(lastWorn, 1)
-  return after > added ? after : added
+/**
+ * The first day that counts towards "unworn": the latest of the day after the last wear, the
+ * day the piece was added, and the purchase date (a wishlist piece bought today starts today).
+ */
+export function unwornSince(item: Pick<Item, 'createdAt' | 'purchaseDate'>, lastWorn: DateKey | undefined): DateKey {
+  let start = addedOn(item)
+  if (item.purchaseDate && item.purchaseDate > start) start = item.purchaseDate
+  if (lastWorn) {
+    const after = addDays(lastWorn, 1)
+    if (after > start) start = after
+  }
+  return start
 }
 
 export function makeUnwornContext(
@@ -78,7 +84,7 @@ export function makeUnwornContext(
 
 /** In-season, non-gap, completed days since the piece was last worn (or added). */
 export function inSeasonUnwornDays(
-  item: Pick<Item, 'createdAt' | 'seasons'>,
+  item: Pick<Item, 'createdAt' | 'seasons' | 'purchaseDate'>,
   lastWorn: DateKey | undefined,
   ctx: UnwornContext,
 ): number {

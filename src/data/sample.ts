@@ -74,7 +74,7 @@ const SPECS: Spec[] = [
 ]
 
 const WISHLIST = [
-  { name: 'Cream cashmere jumper', category: 'knitwear', colour: 'cream', seasons: ['autumn', 'winter', 'spring'], price: 590, wearsPerMonth: 6, addedDaysAgo: 3, coolingOffInDays: 4 },
+  { name: 'Cream cashmere jumper', category: 'knitwear', colour: 'cream', seasons: ['autumn', 'winter', 'spring'], price: 590, wearsPerMonth: 4, addedDaysAgo: 3, coolingOffInDays: 4 },
   { name: 'Black ankle boots', category: 'shoes', colour: 'black', seasons: ['autumn', 'winter', 'spring'], price: 650, wearsPerMonth: 8, addedDaysAgo: 9, coolingOffInDays: -2 },
 ] as const
 

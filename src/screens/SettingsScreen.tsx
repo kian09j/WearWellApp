@@ -121,6 +121,23 @@ export function SettingsScreen() {
       </Section>
 
       {settings && (
+        <Section title={t('settings.beforeYouBuy')}>
+          <label className="flex cursor-pointer items-start gap-3 px-5 py-4">
+            <input
+              type="checkbox"
+              checked={settings.coolingOff}
+              onChange={(e) => void updateSettings({ coolingOff: e.target.checked })}
+              className="mt-0.5 h-6 w-6 shrink-0 accent-mak"
+            />
+            <span>
+              <span className="block font-semibold">{t('settings.coolingOff')}</span>
+              <span className="block text-[13.5px] text-muted">{t('settings.coolingOffHint')}</span>
+            </span>
+          </label>
+        </Section>
+      )}
+
+      {settings && (
         <Section title={t('settings.vinted')}>
           <div className="flex flex-col gap-4 px-5 py-4">
             <div>
