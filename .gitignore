@@ -1,0 +1,12 @@
+node_modules
+dist
+*.local
+.env
+.env.*
+!.env.example
+.vercel
+.DS_Store
+*.log
+# native build output (added in step 10)
+android/app/build
+ios/App/Pods

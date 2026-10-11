@@ -1,0 +1,180 @@
+// Every UI string lives here. To add a language, copy this file to e.g. pl.ts in the same
+// folder and translate the values: it is picked up automatically, no code changes needed.
+// {name} placeholders are filled in at runtime. Entries with `one` / `other` (and `few`,
+// `many` for languages like Polish) are plurals, chosen by Intl.PluralRules.
+
+const en = {
+  app: {
+    name: 'WearWell',
+    tagline: 'Wear what you love. Buy better, not more.',
+  },
+
+  common: {
+    cancel: 'Cancel',
+    confirm: 'Confirm',
+    save: 'Save',
+    delete: 'Delete',
+    undo: 'Undo',
+    close: 'Close',
+    back: 'Back',
+    done: 'Done',
+    comingSoon: 'Coming soon',
+    items: { one: '{count} item', other: '{count} items' },
+    wears: { one: '{count} wear', other: '{count} wears' },
+    noPrice: 'no price',
+    notWornYet: 'not worn yet',
+  },
+
+  nav: {
+    today: 'Today',
+    wardrobe: 'Wardrobe',
+    beforeYouBuy: 'Before you buy',
+    stats: 'Stats',
+    settings: 'Settings',
+    main: 'Main',
+  },
+
+  today: {
+    title: 'Today',
+    greetingMorning: 'Good morning',
+    greetingAfternoon: 'Good afternoon',
+    greetingEvening: 'Good evening',
+    emptyTitle: 'Your wardrobe is empty (for now)',
+    emptyBody: 'Load the sample wardrobe to look around, or start adding your own clothes.',
+    loadSample: 'Load sample wardrobe',
+    previewTitle: 'One tap to log what you wore',
+    previewBody: 'Logging your outfit lands in the next build step. Your data layer is ready: {items} and {wears} so far.',
+  },
+
+  wardrobe: {
+    title: 'Wardrobe',
+    previewNote: 'A plain preview of what is stored. The real catalogue comes in step 2.',
+    emptyTitle: 'Nothing here yet',
+    emptyBody: 'Load the sample wardrobe from Settings to see how it works.',
+    wishlistBadge: 'wishlist',
+    sampleBadge: 'sample',
+  },
+
+  beforeYouBuy: {
+    title: 'Before you buy',
+    teaser: 'Check what a new piece would really cost per wear, and whether you already own something like it.',
+  },
+
+  stats: {
+    title: 'Stats',
+    teaser: 'Cost per wear, your most loved pieces and the money you have recovered, all in one place.',
+  },
+
+  settings: {
+    title: 'Settings',
+    preferences: 'Preferences',
+    currency: 'Currency',
+    currencyHint: 'Used for new items. Existing prices keep their own currency.',
+    data: 'Your data',
+    dataPrivacy: 'Everything stays on this device. No account, no tracking. Export a backup now and then so you never lose your wardrobe.',
+    export: 'Export backup',
+    exportHint: 'Saves everything, photos included, as one file.',
+    exported: 'Backup saved',
+    import: 'Import backup',
+    importHint: 'Replaces what is on this device with a backup file.',
+    importConfirmTitle: 'Replace your wardrobe?',
+    importConfirmBody: 'This replaces everything on this device with the backup from {date}: {items} and {wears}. Export a backup first if you want to keep what is here.',
+    importConfirm: 'Replace',
+    imported: 'Backup imported',
+    importFailed: 'That file does not look like a WearWell backup.',
+    sample: 'Sample wardrobe',
+    sampleHint: 'About 20 pieces and four months of outfits, so you can try every screen.',
+    loadSample: 'Load sample wardrobe',
+    sampleLoaded: 'Sample wardrobe loaded',
+    removeSample: 'Remove sample wardrobe',
+    removeSampleHint: 'Removes only the sample pieces and their wears. Your own items stay.',
+    sampleRemoved: 'Sample wardrobe removed',
+    erase: 'Erase everything',
+    eraseHint: 'Deletes all items, wears, outfits and photos from this device.',
+    eraseConfirmTitle: 'Erase everything?',
+    eraseConfirmBody: 'All items, wears, outfits and photos on this device will be deleted. This cannot be undone.',
+    eraseConfirm: 'Erase',
+    erased: 'Everything erased',
+    about: 'About',
+    aboutBody: 'WearWell is made by Polska Picks, a hand-picked catalogue of Polish slow fashion brands.',
+    visitPolskaPicks: 'Visit polskapicks.com',
+    version: 'Version {version}',
+  },
+
+  categories: {
+    tshirts: 'T-shirts & tops',
+    shirts: 'Shirts & blouses',
+    knitwear: 'Knitwear',
+    sweatshirts: 'Sweatshirts & hoodies',
+    dresses: 'Dresses & jumpsuits',
+    skirts: 'Skirts',
+    trousers: 'Trousers',
+    jeans: 'Jeans',
+    shorts: 'Shorts',
+    jackets: 'Jackets',
+    coats: 'Coats',
+    blazers: 'Blazers & suits',
+    activewear: 'Activewear',
+    shoes: 'Shoes',
+    bags: 'Bags',
+    accessories: 'Accessories',
+    other: 'Other',
+  },
+
+  colours: {
+    black: 'Black',
+    white: 'White',
+    cream: 'Cream',
+    grey: 'Grey',
+    navy: 'Navy',
+    blue: 'Blue',
+    lightblue: 'Light blue',
+    green: 'Green',
+    khaki: 'Khaki',
+    beige: 'Beige',
+    brown: 'Brown',
+    red: 'Red',
+    burgundy: 'Burgundy',
+    pink: 'Pink',
+    purple: 'Purple',
+    yellow: 'Yellow',
+    orange: 'Orange',
+    multi: 'Multicolour',
+  },
+
+  seasons: {
+    spring: 'Spring',
+    summer: 'Summer',
+    autumn: 'Autumn',
+    winter: 'Winter',
+    allYear: 'All year',
+  },
+
+  conditions: {
+    new_with_tags: 'New with tags',
+    new_no_tags: 'New without tags',
+    very_good: 'Very good',
+    good: 'Good',
+    satisfactory: 'Satisfactory',
+  },
+
+  statuses: {
+    active: 'In rotation',
+    occasion: 'Kept for occasions',
+    sentimental: 'Sentimental',
+    archived: 'Archived',
+    listed: 'Listed for sale',
+    sold: 'Sold',
+    donated: 'Donated',
+  },
+
+  currencies: {
+    PLN: 'Polish złoty (PLN)',
+    EUR: 'Euro (EUR)',
+    CZK: 'Czech koruna (CZK)',
+    GBP: 'British pound (GBP)',
+    USD: 'US dollar (USD)',
+  },
+}
+
+export default en
