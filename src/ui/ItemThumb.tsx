@@ -2,8 +2,9 @@ import { Heart } from 'lucide-react'
 import { Link } from 'react-router'
 import type { Item } from '../domain/types'
 import { colourDef } from '../domain/colours'
+import { itemCpw } from '../domain/cpw'
 import { usePhotoUrl } from '../data'
-import { t } from '../i18n'
+import { formatMoney, t } from '../i18n'
 import { CategoryIcon } from './CategoryIcon'
 
 /** Tinted background for photo-less pieces: a soft wash of the piece's colour. */
@@ -52,8 +53,14 @@ export function ItemThumb({ item, iconSize = 44, fit = 'cover' }: ItemThumbProps
 
 export function ItemTile({ item, wears }: { item: Item; wears: number }) {
   const wearText = wears > 0 ? t('wardrobe.tileWears', { count: wears }) : t('common.notWornYet')
+  const cpw = itemCpw(item, wears)
+  const cpwText = cpw.kind === 'cpw' ? t('cpw.short', { amount: formatMoney(cpw.value) }) : undefined
   return (
-    <Link to={`/item/${item.id}`} className="group block rounded-[22px]" aria-label={`${item.name}, ${wearText}`}>
+    <Link
+      to={`/item/${item.id}`}
+      className="group block rounded-[22px]"
+      aria-label={[item.name, cpw.kind === 'cpw' ? `${formatMoney(cpw.value)} ${t('cpw.perWear')}` : undefined, wearText].filter(Boolean).join(', ')}
+    >
       <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-card shadow-soft transition-transform duration-150 group-active:scale-[0.98]">
         <ItemThumb item={item} />
         <ColourDot item={item} className="absolute top-3 right-3" />
@@ -65,7 +72,15 @@ export function ItemTile({ item, wears }: { item: Item; wears: number }) {
         {item.placeholder && <span className="hang-tag absolute bottom-2.5 left-2.5 !text-[11.5px]">{t('wardrobe.addDetails')}</span>}
       </div>
       <p className="mt-2 truncate px-0.5 text-[15px] font-semibold">{item.name}</p>
-      <p className="truncate px-0.5 text-[13px] text-muted">{wearText}</p>
+      <p className="truncate px-0.5 text-[13px] text-muted" aria-hidden="true">
+        {cpwText ? (
+          <>
+            <span className="font-semibold text-ink/80">{cpwText}</span> · {wears}×
+          </>
+        ) : (
+          wearText
+        )}
+      </p>
     </Link>
   )
 }

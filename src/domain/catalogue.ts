@@ -1,17 +1,12 @@
-import type { CategoryId, DateKey, Item, ItemStatus } from './types'
+import type { CategoryId, DateKey, Item } from './types'
+import { VIEW_STATUSES, type WardrobeView } from './statuses'
+import { cpwSortKey } from './cpw'
 import { isInSeason } from './dates'
 import { wearStat, type WearIndex } from './wearStats'
 
-export type WardrobeView = 'wardrobe' | 'archived' | 'gone'
+export { VIEW_STATUSES, type WardrobeView } from './statuses'
 
-/** Which statuses each wardrobe view shows. Listed pieces are still in the wardrobe until sold. */
-export const VIEW_STATUSES: Record<WardrobeView, readonly ItemStatus[]> = {
-  wardrobe: ['active', 'occasion', 'sentimental', 'listed'],
-  archived: ['archived'],
-  gone: ['sold', 'donated'],
-}
-
-export type SortKey = 'recent' | 'name' | 'mostWorn' | 'leastWorn'
+export type SortKey = 'recent' | 'name' | 'mostWorn' | 'leastWorn' | 'cpwLow' | 'cpwHigh'
 
 export interface CatalogueFilter {
   view: WardrobeView
@@ -66,6 +61,18 @@ export function sortItems(items: readonly Item[], key: SortKey, wears: WearIndex
         const sb = wearStat(wears, b.id)
         return sa.count - sb.count || (sa.last ?? '').localeCompare(sb.last ?? '') || byName(a, b)
       })
+    case 'cpwLow':
+    case 'cpwHigh': {
+      // pieces without a price always go last; unworn priced pieces count as their full price
+      const dir = key === 'cpwLow' ? 1 : -1
+      return sorted.sort((a, b) => {
+        const [ta, va] = cpwSortKey(a, wearStat(wears, a.id).count)
+        const [tb, vb] = cpwSortKey(b, wearStat(wears, b.id).count)
+        if ((ta === 2) !== (tb === 2)) return ta === 2 ? 1 : -1
+        const tierOrder = key === 'cpwLow' ? ta - tb : tb - ta
+        return tierOrder || dir * (va - vb) || byName(a, b)
+      })
+    }
   }
 }
 

@@ -25,6 +25,8 @@ const SORTS: { id: SortKey; label: TKey }[] = [
   { id: 'name', label: 'wardrobe.sortName' },
   { id: 'mostWorn', label: 'wardrobe.sortMostWorn' },
   { id: 'leastWorn', label: 'wardrobe.sortLeastWorn' },
+  { id: 'cpwLow', label: 'wardrobe.sortCpwLow' },
+  { id: 'cpwHigh', label: 'wardrobe.sortCpwHigh' },
 ]
 
 const chip =

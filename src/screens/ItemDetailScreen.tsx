@@ -9,6 +9,7 @@ import { Button } from '../ui/Button'
 import { ColourDot, ItemThumb } from '../ui/ItemThumb'
 import { TopBar, useBack } from '../ui/TopBar'
 import { useToast } from '../ui/Toast'
+import { CpwCard } from './CpwCard'
 import { WearHistory } from './WearHistory'
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
@@ -107,23 +108,10 @@ export function ItemDetailScreen() {
           </div>
         )}
 
-        <p className="mt-5 rounded-[22px] bg-tint-mieta px-5 py-4 text-[15px]">
-          <span className="font-semibold">
-            {stat && stat.count > 0 ? t('item.wornCount', { count: stat.count }) : t('item.neverWorn')}
-          </span>
-          {stat?.last && <span className="text-ink/75">, {t('item.lastWorn', { date: formatDate(stat.last, 'dayMonth') })}</span>}
-        </p>
+        {item.kind === 'owned' && <CpwCard item={item} wears={stat?.count ?? 0} lastWorn={stat?.last} />}
 
         <dl className="card-soft mt-5 px-5 py-1 text-[15px]">
-          <Fact label={t('item.price')}>
-            {item.price ? (
-              formatMoney(item.price)
-            ) : (
-              <Link to={`/item/${item.id}/edit`} className="text-mak underline underline-offset-4">
-                {t('item.addPrice')}
-              </Link>
-            )}
-          </Fact>
+          {item.kind === 'wishlist' && item.price && <Fact label={t('item.price')}>{formatMoney(item.price)}</Fact>}
           {item.purchaseDate && <Fact label={t('item.bought')}>{formatDate(item.purchaseDate)}</Fact>}
           {item.brand && <Fact label={t('item.brand')}>{item.brand}</Fact>}
           {item.size && <Fact label={t('item.size')}>{item.size}</Fact>}
