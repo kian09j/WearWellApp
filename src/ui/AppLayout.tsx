@@ -12,7 +12,7 @@ const TABS: { to: string; label: TKey; icon: LucideIcon }[] = [
 
 export function AppLayout() {
   return (
-    <div className="flex min-h-dvh flex-col pt-safe">
+    <div className="flex min-h-dvh flex-col">
       <main className="flex-1 pb-24">
         <Outlet />
       </main>

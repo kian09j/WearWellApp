@@ -13,7 +13,7 @@ interface ScreenProps {
 
 export function Screen({ title, eyebrow, children, noSettings }: ScreenProps) {
   return (
-    <div className="mx-auto w-full max-w-lg px-4 pb-8">
+    <div className="mx-auto w-full max-w-lg px-4 pt-safe pb-8">
       <header className="flex items-start justify-between gap-3 pt-6 pb-5">
         <div className="min-w-0">
           {eyebrow && <p className="label-caps mb-1">{eyebrow}</p>}

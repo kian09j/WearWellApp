@@ -40,14 +40,29 @@ export async function updateItem(id: string, patch: ItemPatch): Promise<void> {
   await db.items.update(id, { ...patch, updatedAt: nowIso() })
 }
 
-/** Soft delete: the item disappears everywhere but stays as a tombstone for future sync. */
+/**
+ * Soft delete: the item disappears everywhere but stays as a tombstone for future sync.
+ * Its photo is kept for a while so Undo brings everything back; purgeDeletedPhotos cleans up.
+ */
 export async function deleteItem(id: string): Promise<void> {
-  await db.transaction('rw', db.items, db.photos, async () => {
-    const item = await db.items.get(id)
-    if (!item) return
-    const now = nowIso()
-    await db.items.update(id, { deletedAt: now, updatedAt: now, photoId: undefined })
-    if (item.photoId) await db.photos.delete(item.photoId)
+  const now = nowIso()
+  await db.items.update(id, { deletedAt: now, updatedAt: now })
+}
+
+export async function restoreItem(id: string): Promise<void> {
+  await db.items.update(id, { deletedAt: undefined, updatedAt: nowIso() })
+}
+
+/** Free the space of photos that belong to items deleted more than `days` ago. */
+export async function purgeDeletedPhotos(days = 30, now = new Date()): Promise<number> {
+  const cutoff = new Date(now.getTime() - days * 86_400_000).toISOString()
+  return db.transaction('rw', db.items, db.photos, async () => {
+    const stale = await db.items.filter((i) => !!i.deletedAt && i.deletedAt < cutoff && !!i.photoId).toArray()
+    for (const item of stale) {
+      await db.photos.delete(item.photoId!)
+      await db.items.update(item.id, { photoId: undefined })
+    }
+    return stale.length
   })
 }
 

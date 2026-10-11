@@ -7,9 +7,10 @@ import '@fontsource-variable/figtree/index.css'
 import '@fontsource/caveat/600.css'
 import './index.css'
 import App from './App'
-import { requestPersistentStorage } from './data'
+import { purgeDeletedPhotos, requestPersistentStorage } from './data'
 
 void requestPersistentStorage()
+void purgeDeletedPhotos()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
