@@ -148,5 +148,7 @@ export interface Settings {
   coolingOff: boolean
   reminder: { enabled: boolean; time: string }
   onboarded: boolean
+  /** Pieces skipped with "Not today" on the rediscovery card, reset each day. */
+  rediscovery?: { date: DateKey; skipped: string[] }
   updatedAt: Timestamp
 }

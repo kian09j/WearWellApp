@@ -4,7 +4,7 @@ Wear what you love. Buy better, not more.
 
 WearWell ([wearwellapp.com](https://www.wearwellapp.com)) is a wardrobe tracker by [Polska Picks](https://polskapicks.com). It helps people wear what they already own, see the real cost per wear of their clothes, and resell what they no longer use. Everything is stored on the device: no account, no tracking.
 
-Status: Phase 1, step 3 of 11 (wear logging and streak). See [Build plan](#build-plan).
+Status: Phase 1, step 4 of 11 (rediscovery card). See [Build plan](#build-plan).
 
 ## Run it
 
@@ -78,7 +78,7 @@ Phase 1 (stopping for review after each step):
 1. ✅ Foundations: project setup, brand tokens, translations, database and data layer, sample data, export/import, app shell
 2. ✅ Item catalogue, quick-count onboarding, photos
 3. ✅ Wear logging, outfits, streak
-4. Rediscovery card
+4. ✅ Rediscovery card
 5. Cost per wear
 6. Gentle nudges for unworn pieces
 7. Vinted resale helper

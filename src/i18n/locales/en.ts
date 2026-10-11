@@ -98,6 +98,18 @@ const en = {
     bestStreak: 'best run {count} days',
   },
 
+  rediscovery: {
+    eyebrow: 'Waiting for a comeback',
+    lastWorn: 'Last worn {date}.',
+    neverWorn: 'Not worn since you added it.',
+    prompt: 'Fancy giving it a day out?',
+    wear: 'Wear it today',
+    skip: 'Not today',
+    welcomeEyebrow: 'Welcome back',
+    welcomeBody: '{name} is back in rotation.',
+    logged: '{name} logged for today',
+  },
+
   outfits: {
     title: 'Outfits',
     intro: 'Save combinations you wear often, then log them with one tap.',

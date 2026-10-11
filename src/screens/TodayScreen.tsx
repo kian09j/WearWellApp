@@ -6,7 +6,9 @@ import { loadSampleData, logMany, logWear, saveOutfit, unlogMany, unlogWear, use
 import { normalizeSearch } from '../domain/catalogue'
 import { addDays, isDateKey } from '../domain/dates'
 import { homeGrid, isWearable, sameAsDayBefore, wornOn } from '../domain/logging'
+import { pickRediscovery } from '../domain/rediscovery'
 import { loggedDays, streakMessage } from '../domain/streak'
+import { makeUnwornContext } from '../domain/unworn'
 import { buildWearIndex } from '../domain/wearStats'
 import { formatDate, t } from '../i18n'
 import { tapFeedback } from '../platform/haptics'
@@ -18,6 +20,7 @@ import { Screen } from '../ui/Screen'
 import { Sheet } from '../ui/Sheet'
 import { useToast } from '../ui/Toast'
 import { useToday } from '../ui/useToday'
+import { RediscoveryCard, useSkippedToday } from './RediscoveryCard'
 
 const COLLAPSED = 12
 
@@ -128,6 +131,13 @@ export function TodayScreen() {
     () => (outfits ?? []).map((o) => ({ ...o, itemIds: o.itemIds.filter((id) => wearableIds.has(id)) })).filter((o) => o.itemIds.length > 0),
     [outfits, wearableIds],
   )
+  const skipped = useSkippedToday(today)
+  const rediscovery = useMemo(() => {
+    // judged on wears up to yesterday, so wearing the piece today keeps it on the card
+    const before = allWears.filter((w) => w.date < today)
+    const ctx = makeUnwornContext(today, before, items ?? [])
+    return pickRediscovery(items ?? [], buildWearIndex(before), wornOn(allWears, today), ctx, skipped)
+  }, [items, allWears, today, skipped])
   const loggedList = [...logged].filter((id) => wearableIds.has(id))
   const matchesOutfit = usableOutfits.some((o) => o.itemIds.length === loggedList.length && o.itemIds.every((id) => logged.has(id)))
 
@@ -195,6 +205,8 @@ export function TodayScreen() {
   return (
     <Screen eyebrow={formatDate(today, 'weekday')} title={greeting()}>
       <StreakChip days={days} today={today} />
+
+      {isToday && rediscovery && <RediscoveryCard pick={rediscovery} today={today} skipped={skipped} />}
 
       <DateSwitcher date={date} today={today} onChange={setDate} />
       {!isToday && (
