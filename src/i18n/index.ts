@@ -115,17 +115,17 @@ export function formatNumber(n: number): string {
   return numberFormat('n', () => new Intl.NumberFormat(formatLocale)).format(n)
 }
 
-export type DateStyle = 'short' | 'medium' | 'long' | 'dayMonth' | 'weekday'
+export type DateStyle = 'short' | 'medium' | 'long' | 'dayMonth' | 'weekday' | 'weekdayShort'
+
+const DATE_OPTIONS: Record<Exclude<DateStyle, 'short' | 'medium' | 'long'>, Intl.DateTimeFormatOptions> = {
+  dayMonth: { day: 'numeric', month: 'short' },
+  weekday: { weekday: 'long', day: 'numeric', month: 'long' },
+  weekdayShort: { weekday: 'short', day: 'numeric', month: 'short' },
+}
 
 export function formatDate(key: DateKey, style: DateStyle = 'medium'): string {
-  const date = fromDateKey(key)
-  const options: Intl.DateTimeFormatOptions =
-    style === 'dayMonth'
-      ? { day: 'numeric', month: 'short' }
-      : style === 'weekday'
-        ? { weekday: 'long', day: 'numeric', month: 'long' }
-        : { dateStyle: style }
-  return new Intl.DateTimeFormat(formatLocale, options).format(date)
+  const options = style === 'short' || style === 'medium' || style === 'long' ? { dateStyle: style } : DATE_OPTIONS[style]
+  return new Intl.DateTimeFormat(formatLocale, options).format(fromDateKey(key))
 }
 
 export function formatTimestamp(iso: string): string {

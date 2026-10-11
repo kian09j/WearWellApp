@@ -11,6 +11,8 @@ import { ItemDetailScreen } from './screens/ItemDetailScreen'
 import { ItemEditorScreen } from './screens/ItemEditorScreen'
 import { WelcomeScreen } from './screens/WelcomeScreen'
 import { QuickCountScreen } from './screens/QuickCountScreen'
+import { OutfitsScreen } from './screens/OutfitsScreen'
+import { OutfitEditorScreen } from './screens/OutfitEditorScreen'
 
 /** First run (nothing stored, not onboarded yet) goes to the welcome screen. */
 function OnboardingGate() {
@@ -39,6 +41,9 @@ export default function App() {
             <Route path="*" element={<TodayScreen />} />
           </Route>
           <Route path="item/:id/edit" element={<ItemEditorScreen />} />
+          <Route path="outfits" element={<OutfitsScreen />} />
+          <Route path="outfits/new" element={<OutfitEditorScreen />} />
+          <Route path="outfits/:id" element={<OutfitEditorScreen />} />
         </Route>
       </Routes>
     </ToastProvider>

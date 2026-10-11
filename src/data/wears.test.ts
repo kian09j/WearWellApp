@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { db } from './db'
 import { addItem } from './items'
-import { listWears, logWear, unlogWear } from './wears'
+import { listWears, logMany, logWear, unlogMany, unlogWear } from './wears'
 
 beforeEach(async () => {
   await Promise.all(db.tables.map((t) => t.clear()))
@@ -24,5 +24,21 @@ describe('wear logging', () => {
     expect(again).toBe(first)
     expect(await listWears()).toHaveLength(1)
     expect(await db.wears.count()).toBe(1)
+  })
+
+  it('logs an outfit at once, and Undo removes only what the outfit added', async () => {
+    const jeans = await addItem({ name: 'Jeans', category: 'jeans' })
+    const tee = await addItem({ name: 'Tee', category: 'tshirts' })
+    const shoes = await addItem({ name: 'Shoes', category: 'shoes' })
+    await logWear(jeans, '2026-10-10') // already logged before the outfit
+
+    const added = await logMany([jeans, tee, shoes], '2026-10-10', 'outfit-1')
+    expect(added.sort()).toEqual([tee, shoes].sort())
+    const logs = await listWears()
+    expect(logs).toHaveLength(3)
+    expect(logs.every((w) => w.outfitId === 'outfit-1')).toBe(true)
+
+    await unlogMany(added, '2026-10-10')
+    expect((await listWears()).map((w) => w.itemId)).toEqual([jeans])
   })
 })

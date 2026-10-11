@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import type { Item, Outfit, Settings, WearLog } from '../domain/types'
 import { getItem, listItems } from './items'
-import { listOutfits } from './outfits'
+import { getOutfit, listOutfits } from './outfits'
 import { getPhoto } from './photos'
 import { hasSampleData } from './sample'
 import { getSettings } from './settings'
@@ -26,6 +26,11 @@ export function useWears(): WearLog[] | undefined {
 
 export function useOutfits(): Outfit[] | undefined {
   return useLiveQuery(listOutfits)
+}
+
+/** undefined while loading, null if missing. */
+export function useOutfit(id: string | undefined): Outfit | null | undefined {
+  return useLiveQuery(async () => (id ? ((await getOutfit(id)) ?? null) : null), [id])
 }
 
 export function useSettings(): Settings | undefined {

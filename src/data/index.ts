@@ -14,8 +14,8 @@ export {
   type NewItem,
 } from './items'
 export { deletePhoto, savePhoto, type NewPhoto } from './photos'
-export { listWears, logWear, unlogWear } from './wears'
-export { deleteOutfit, listOutfits, saveOutfit, updateOutfit } from './outfits'
+export { listWears, logMany, logWear, unlogMany, unlogWear } from './wears'
+export { deleteOutfit, getOutfit, listOutfits, restoreOutfit, saveOutfit, updateOutfit } from './outfits'
 export { DEFAULT_SETTINGS, getSettings, updateSettings } from './settings'
 export {
   BackupError,
@@ -28,4 +28,4 @@ export {
   type BackupFile,
 } from './backup'
 export { hasSampleData, loadSampleData, removeSampleData } from './sample'
-export { useHasSampleData, useItem, useItems, useOutfits, usePhotoUrl, useSettings, useWears } from './hooks'
+export { useHasSampleData, useItem, useItems, useOutfit, useOutfits, usePhotoUrl, useSettings, useWears } from './hooks'

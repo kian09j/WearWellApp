@@ -18,6 +18,15 @@ export async function deleteOutfit(id: string): Promise<void> {
   await db.outfits.update(id, { deletedAt: now, updatedAt: now })
 }
 
+export async function restoreOutfit(id: string): Promise<void> {
+  await db.outfits.update(id, { deletedAt: undefined, updatedAt: nowIso() })
+}
+
+export async function getOutfit(id: string): Promise<Outfit | undefined> {
+  const outfit = await db.outfits.get(id)
+  return outfit && alive(outfit) ? outfit : undefined
+}
+
 export async function listOutfits(): Promise<Outfit[]> {
   return (await db.outfits.toArray()).filter(alive)
 }

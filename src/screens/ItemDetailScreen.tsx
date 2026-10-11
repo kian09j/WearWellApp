@@ -9,6 +9,7 @@ import { Button } from '../ui/Button'
 import { ColourDot, ItemThumb } from '../ui/ItemThumb'
 import { TopBar, useBack } from '../ui/TopBar'
 import { useToast } from '../ui/Toast'
+import { WearHistory } from './WearHistory'
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -130,6 +131,8 @@ export function ItemDetailScreen() {
           <Fact label={t('item.seasons')}>{seasons}</Fact>
           <Fact label={t('item.status')}>{t(`statuses.${item.status}`)}</Fact>
         </dl>
+
+        {item.kind === 'owned' && <WearHistory itemId={item.id} wears={wears ?? []} />}
 
         {item.notes && (
           <section className="mt-5">
