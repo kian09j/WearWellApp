@@ -16,7 +16,9 @@ import { Sheet } from '../ui/Sheet'
 import { useToast } from '../ui/Toast'
 import { useToday } from '../ui/useToday'
 import { moneyRecovered } from '../domain/resale'
-import { bestCpw, colourBreakdown, highestCpw, leastWorn, mostWorn, wardrobeValue, wornShare } from '../domain/stats'
+import { bestCpw, colourBreakdown, highestCpw, inWardrobe, leastWorn, mostWorn, wardrobeValue, wornShare } from '../domain/stats'
+import { Link } from 'react-router'
+import { Flower } from '../ui/Flower'
 import { ColourBars, moneyList, RankedList, StatSection, StatTile } from './StatsWidgets'
 
 function TargetSheet({
@@ -108,6 +110,23 @@ export function StatsScreen() {
   if (items === undefined || wears === undefined || settings === undefined) return <Screen title={t('stats.title')}>{null}</Screen>
 
   const money = (amount: number) => formatMoney({ amount, currency })
+
+  if (!items.some(inWardrobe)) {
+    return (
+      <Screen title={t('stats.title')}>
+        <section className="card-soft flex flex-col items-center px-6 py-10 text-center">
+          <Flower size={64} petal="var(--color-chaber)" inner="var(--color-card)" />
+          <p className="mt-5 max-w-xs text-muted">{t('stats.empty')}</p>
+          <Link
+            to="/welcome/count"
+            className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-mak px-6 text-[15px] font-semibold text-card hover:bg-mak-strong"
+          >
+            {t('wardrobe.quickCount')}
+          </Link>
+        </section>
+      </Screen>
+    )
+  }
 
   return (
     <Screen title={t('stats.title')}>
@@ -228,7 +247,7 @@ export function StatsScreen() {
                   {progress && target !== undefined ? (
                     <span className="mt-2 block">
                       <ProgressBar ratio={progress.ratio} label={`${t('cpw.target', { amount: money(target) })}: ${progressText}`} />
-                      <span className={`mt-1 flex justify-between text-[12.5px] ${progress.reached ? 'font-semibold text-koniczyna' : 'text-ink/70'}`}>
+                      <span className={`mt-1 flex justify-between text-[12.5px] ${progress.reached ? 'font-semibold text-koniczyna-ink' : 'text-ink/70'}`}>
                         <span>{t('cpw.target', { amount: money(target) })}</span>
                         <span>{progressText}</span>
                       </span>

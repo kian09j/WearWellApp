@@ -245,7 +245,7 @@ export function TodayScreen() {
               type="button"
               aria-pressed={allLogged}
               onClick={() => void toggleOutfit(o)}
-              className={`${chip} ${allLogged ? 'border-koniczyna bg-tint-mieta text-koniczyna' : 'border-ink/12 bg-card text-ink/85 hover:border-ink/30'}`}
+              className={`${chip} ${allLogged ? 'border-koniczyna bg-tint-mieta text-koniczyna-ink' : 'border-ink/12 bg-card text-ink/85 hover:border-ink/30'}`}
             >
               {allLogged && <Check size={16} strokeWidth={3} aria-hidden="true" />}
               {o.name}
@@ -271,7 +271,7 @@ export function TodayScreen() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t('today.findPiece')}
             aria-label={t('today.findPiece')}
-            className="min-h-12 w-full rounded-full border-[1.5px] border-ink/12 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/45 focus:border-mak focus:outline-none"
+            className="min-h-12 w-full rounded-full border-[1.5px] border-ink/35 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/60 focus:border-mak focus:outline-none"
           />
         </div>
       )}

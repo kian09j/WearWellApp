@@ -127,7 +127,7 @@ function Seller({ item, settings }: { item: Item; settings: Settings }) {
             {(!suggestion || !item.size || !item.condition) && (
               <p className="mt-3 text-[14px]">
                 {!item.size || !item.condition ? `${t('sell.missing')} ` : ''}
-                <Link to={`/item/${item.id}/edit`} className="font-semibold text-mak underline underline-offset-4">
+                <Link to={`/item/${item.id}/edit`} className="font-semibold text-mak-strong underline underline-offset-4">
                   {t('sell.addDetails')}
                 </Link>
               </p>

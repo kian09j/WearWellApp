@@ -27,7 +27,7 @@ export function LogTile({ item, selected, onToggle }: LogTileProps) {
           </>
         )}
       </span>
-      <span className={`mt-1.5 block truncate px-0.5 text-[13px] leading-tight font-semibold ${selected ? 'text-koniczyna' : 'text-ink/85'}`}>
+      <span className={`mt-1.5 block truncate px-0.5 text-[13px] leading-tight font-semibold ${selected ? 'text-koniczyna-ink' : 'text-ink/85'}`}>
         {item.name}
       </span>
     </button>

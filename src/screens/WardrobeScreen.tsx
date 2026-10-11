@@ -122,7 +122,7 @@ export function WardrobeScreen() {
           onChange={(e) => set('q', e.target.value || undefined)}
           placeholder={t('wardrobe.search')}
           aria-label={t('wardrobe.search')}
-          className="min-h-12 w-full rounded-full border-[1.5px] border-ink/12 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/45 focus:border-mak focus:outline-none"
+          className="min-h-12 w-full rounded-full border-[1.5px] border-ink/35 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/60 focus:border-mak focus:outline-none"
         />
       </div>
 

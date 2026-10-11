@@ -167,7 +167,7 @@ export function BeforeYouBuyScreen() {
               </p>
             )}
             {target !== undefined && yearCpw !== undefined && (
-              <p className="mt-1 text-[14px] font-semibold text-koniczyna">
+              <p className="mt-1 text-[14px] font-semibold text-koniczyna-ink">
                 {yearCpw <= target
                   ? t('beforeYouBuy.targetMet', { amount: formatMoney({ amount: target, currency: cur }) })
                   : t('beforeYouBuy.targetMissed', { amount: formatMoney({ amount: target, currency: cur }) })}
@@ -219,7 +219,7 @@ export function BeforeYouBuyScreen() {
                       {year !== undefined && item.price && ` · ${t('beforeYouBuy.wishlistYear', { amount: formatMoney({ amount: year, currency: item.price.currency }) })}`}
                     </span>
                     <span
-                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[12px] font-semibold ${cooling.active ? 'bg-tint-bez text-ink/80' : 'bg-tint-mieta text-koniczyna'}`}
+                      className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[12px] font-semibold ${cooling.active ? 'bg-tint-bez text-ink/80' : 'bg-tint-mieta text-koniczyna-ink'}`}
                     >
                       {cooling.active ? t('beforeYouBuy.coolingDays', { count: cooling.daysLeft }) : t('beforeYouBuy.coolingOver')}
                     </span>

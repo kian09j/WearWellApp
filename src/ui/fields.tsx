@@ -2,7 +2,7 @@ import { useId, type ComponentPropsWithRef, type ReactNode } from 'react'
 import { t } from '../i18n'
 
 export const inputClass =
-  'min-h-12 w-full rounded-2xl border-[1.5px] border-ink/15 bg-card px-4 text-[16px] text-ink placeholder:text-ink/40 focus:border-mak focus:outline-none aria-[invalid=true]:border-mak'
+  'min-h-12 w-full rounded-2xl border-[1.5px] border-ink/35 bg-card px-4 text-[16px] text-ink placeholder:text-ink/60 focus:border-mak focus:outline-none aria-[invalid=true]:border-mak'
 
 interface FieldProps {
   label: string

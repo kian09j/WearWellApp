@@ -54,7 +54,7 @@ export function WearHistory({ itemId, wears }: { itemId: string; wears: readonly
                   type="button"
                   onClick={() => void remove(d)}
                   aria-label={t('item.removeWear', { date: formatDate(d, 'weekday') })}
-                  className="-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-ink/45 hover:bg-sand hover:text-ink"
+                  className="-mr-2 flex h-11 w-11 items-center justify-center rounded-full text-ink/60 hover:bg-sand hover:text-ink"
                 >
                   <X size={18} aria-hidden="true" />
                 </button>

@@ -66,7 +66,7 @@ export function QuickCountScreen() {
             return (
               <li key={id} className="flex items-center gap-3 py-2.5">
                 <span
-                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${n > 0 ? 'bg-tint-mieta text-koniczyna' : 'bg-sand text-ink/60'}`}
+                  className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${n > 0 ? 'bg-tint-mieta text-koniczyna-ink' : 'bg-sand text-ink/60'}`}
                 >
                   <CategoryIcon category={id} size={24} />
                 </span>

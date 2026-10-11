@@ -30,7 +30,7 @@ export function RediscoveryCard({ pick, today, skipped }: { pick: Rediscovery; t
           <ItemThumb item={item} iconSize={26} />
         </Link>
         <div className="min-w-0">
-          <p className="label-caps inline-flex items-center gap-1.5 !text-koniczyna">
+          <p className="label-caps inline-flex items-center gap-1.5 !text-koniczyna-ink">
             <Flower size={14} petal="var(--color-koniczyna)" inner="var(--color-card)" />
             {t('rediscovery.welcomeEyebrow')}
           </p>

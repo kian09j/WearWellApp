@@ -16,7 +16,8 @@
   --color-chaber: #4f72c9; /* cornflower, graphics only */
   --color-chaber-ink: #3a5bae; /* cornflower for text */
   --color-slonecznik: #f2b53a; /* sunflower */
-  --color-koniczyna: #3e7a4f; /* clover */
+  --color-koniczyna: #3e7a4f; /* clover, graphics */
+  --color-koniczyna-ink: #2f6440; /* clover for text: 5.8:1 on mint, 6.5:1 on paper */
   --color-roz: #f4bfc6; /* rose */
   --color-bez: #c9b6e4; /* lilac */
 

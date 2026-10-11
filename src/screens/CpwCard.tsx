@@ -71,7 +71,7 @@ export function CpwCard({ item, wears, lastWorn }: { item: Item; wears: number; 
             ratio={progress.ratio}
             label={progress.reached ? t('cpw.targetReached', { target: target.money }) : t('cpw.toTarget', { count: progress.wearsNeeded, target: target.money })}
           />
-          <p className="mt-1.5 text-[13.5px] font-semibold text-koniczyna">
+          <p className="mt-1.5 text-[13.5px] font-semibold text-koniczyna-ink">
             {progress.reached ? t('cpw.targetReached', { target: target.money }) : t('cpw.toTarget', { count: progress.wearsNeeded, target: target.money })}
           </p>
         </div>

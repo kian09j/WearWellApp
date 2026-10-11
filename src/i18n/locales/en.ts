@@ -515,6 +515,7 @@ const en = {
     about: 'About',
     aboutBody: 'WearWell is made by Polska Picks, a hand-picked catalogue of Polish slow fashion brands.',
     visitPolskaPicks: 'Visit polskapicks.com',
+    privacy: 'Privacy',
     version: 'Version {version}',
   },
 

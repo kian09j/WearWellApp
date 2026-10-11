@@ -5,6 +5,7 @@ import {
   backupFileName,
   createBackup,
   eraseEverything,
+  getSettings,
   loadSampleData,
   parseBackup,
   removeSampleData,
@@ -19,6 +20,8 @@ import { CURRENCIES, isCurrencyCode } from '../domain/money'
 import { VINTED_COUNTRIES } from '../domain/vinted'
 import { formatRegion, formatTimestamp, t } from '../i18n'
 import { openExternal } from '../platform/external'
+import { isNative } from '../platform/native'
+import { allowReminders, cancelDailyReminder, scheduleDailyReminder } from '../platform/reminders'
 import { pickFile, saveTextFile } from '../platform/files'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Wordmark } from '../ui/Flower'
@@ -93,6 +96,10 @@ export function SettingsScreen() {
     if (!pendingImport) return
     await restoreBackup(pendingImport)
     setPendingImport(null)
+    // keep the native daily reminder in step with the imported settings
+    const restored = await getSettings()
+    if (restored.reminder.enabled && (await allowReminders())) await scheduleDailyReminder(restored.reminder.time, t('reminder.title'), t('reminder.body'))
+    else await cancelDailyReminder()
     toast(t('settings.imported'))
   }
 
@@ -254,7 +261,18 @@ export function SettingsScreen() {
             {t('settings.visitPolskaPicks')}
             <ExternalLink size={16} aria-hidden="true" />
           </a>
-          <p className="mt-4 text-[13px] text-muted">{t('settings.version', { version: __APP_VERSION__ })}</p>
+          <p className="mt-4 text-[13px] text-muted">
+            <a href="/privacy.html" target="_blank" rel="noopener" className="font-semibold text-ink underline underline-offset-4" onClick={(e) => {
+              if (isNative()) {
+                e.preventDefault()
+                openExternal('https://www.wearwellapp.com/privacy.html')
+              }
+            }}>
+              {t('settings.privacy')}
+            </a>
+            {' · '}
+            {t('settings.version', { version: __APP_VERSION__ })}
+          </p>
         </div>
       </Section>
 
@@ -279,6 +297,7 @@ export function SettingsScreen() {
         confirmLabel={t('settings.eraseConfirm')}
         onConfirm={async () => {
           await eraseEverything()
+          await cancelDailyReminder()
           setConfirmErase(false)
           toast(t('settings.erased'))
         }}

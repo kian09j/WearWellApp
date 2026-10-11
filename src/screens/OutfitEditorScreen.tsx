@@ -118,7 +118,7 @@ function Editor({ outfit, items, count }: { outfit?: Outfit; items: Item[]; coun
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('today.findPiece')}
               aria-label={t('today.findPiece')}
-              className="min-h-12 w-full rounded-full border-[1.5px] border-ink/12 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/45 focus:border-mak focus:outline-none"
+              className="min-h-12 w-full rounded-full border-[1.5px] border-ink/35 bg-card pr-4 pl-11 text-[16px] placeholder:text-ink/60 focus:border-mak focus:outline-none"
             />
           </div>
           <ul className="grid grid-cols-3 gap-x-3 gap-y-4">
