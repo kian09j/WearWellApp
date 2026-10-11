@@ -60,7 +60,7 @@ export function BeforeYouBuyScreen() {
 
   const cur = currency ?? settings?.currency ?? 'PLN'
   const price = parsePriceInput(priceText)
-  const wearIndex = useMemo(() => buildWearIndex(wears ?? []), [wears])
+  const wearIndex = useMemo(() => buildWearIndex(wears ?? [], items ?? []), [wears, items])
   const similar = useMemo(() => (category ? similarOwned(items ?? [], category, colour, wearIndex) : []), [items, category, colour, wearIndex])
   const catAverage = useMemo(
     () => (category ? categoryCpw(items ?? [], wearIndex, cur).get(category)?.cpw : undefined),

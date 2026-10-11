@@ -64,7 +64,7 @@ export function WardrobeScreen() {
     )
   }
 
-  const wearIndex = useMemo(() => buildWearIndex(wears ?? []), [wears])
+  const wearIndex = useMemo(() => buildWearIndex(wears ?? [], items ?? []), [wears, items])
   const owned = useMemo(() => (items ?? []).filter((i) => i.kind === 'owned'), [items])
   const inView = useMemo(() => owned.filter((i) => VIEW_STATUSES[view].includes(i.status)), [owned, view])
   const presentCategories = useMemo(() => CATEGORIES.filter((c) => inView.some((i) => i.category === c.id)), [inView])
@@ -105,6 +105,9 @@ export function WardrobeScreen() {
             <Button variant="ghost" icon={<Plus size={18} aria-hidden="true" />} onClick={() => setAdding(true)}>
               {t('wardrobe.addPiece')}
             </Button>
+            <Link to="/import" className="inline-flex min-h-11 items-center justify-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
+              {t('wardrobe.importCsv')}
+            </Link>
           </div>
         </section>
         <QuickAddSheet open={adding} onClose={() => setAdding(false)} />

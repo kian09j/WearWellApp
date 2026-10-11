@@ -28,4 +28,5 @@ export {
   type BackupFile,
 } from './backup'
 export { hasSampleData, loadSampleData, removeSampleData } from './sample'
+export { importPieces, undoImport } from './importer'
 export { useHasSampleData, useItem, useItems, useOutfit, useOutfits, usePhotoUrl, useSettings, useWears } from './hooks'

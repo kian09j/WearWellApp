@@ -36,6 +36,7 @@ interface Draft {
   salePrice: string
   saleDate: string
   wearsPerMonth: WearFrequency
+  priorWears: string
 }
 
 function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
@@ -56,6 +57,7 @@ function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
     salePrice: item.sale ? String(item.sale.amount).replace('.', ',') : '',
     saleDate: item.sale?.date ?? '',
     wearsPerMonth: nearestFrequency(item.wishlist?.wearsPerMonth ?? 4),
+    priorWears: item.priorWears ? String(item.priorWears) : '',
   }
 }
 
@@ -85,7 +87,7 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
   const [photo, setPhoto] = useState<PhotoChange>({ state: 'keep' })
   const [busy, setBusy] = useState(false)
   const [photoError, setPhotoError] = useState(false)
-  const [errors, setErrors] = useState<{ name?: string; price?: string; salePrice?: string }>({})
+  const [errors, setErrors] = useState<{ name?: string; price?: string; salePrice?: string; priorWears?: string }>({})
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const [saving, setSaving] = useState(false)
   const cameraInput = useRef<HTMLInputElement>(null)
@@ -125,13 +127,16 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
     const name = draft.name.trim()
     const price = parsePriceInput(draft.price)
     const salePrice = draft.status === 'sold' ? parsePriceInput(draft.salePrice) : undefined
+    const priorText = draft.priorWears.trim()
+    const priorWears = priorText === '' ? 0 : /^d{1,5}$/.test(priorText) ? Number(priorText) : null
     const nextErrors = {
       name: name ? undefined : t('editor.nameRequired'),
       price: price === null ? t('editor.priceInvalid') : undefined,
       salePrice: salePrice === null ? t('editor.priceInvalid') : undefined,
+      priorWears: priorWears === null ? t('editor.priorWearsInvalid') : undefined,
     }
     setErrors(nextErrors)
-    if (nextErrors.name || nextErrors.price || nextErrors.salePrice) {
+    if (nextErrors.name || nextErrors.price || nextErrors.salePrice || nextErrors.priorWears) {
       // bring the first problem into view
       requestAnimationFrame(() => document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
       return
@@ -165,6 +170,7 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
           : undefined,
       photoId,
       placeholder: false,
+      priorWears: priorWears ? priorWears : undefined,
       wishlist: item.kind === 'wishlist' ? { ...item.wishlist, wearsPerMonth: draft.wearsPerMonth } : item.wishlist,
     })
     toast(t('editor.saved'))
@@ -339,6 +345,14 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
           </div>
         )}
         </>
+        )}
+
+        {item.kind === 'owned' && (
+          <Field label={t('editor.priorWears')} hint={t('editor.priorWearsHint')} error={errors.priorWears} optional>
+            {(p) => (
+              <TextInput {...p} inputMode="numeric" value={draft.priorWears} onChange={(e) => update('priorWears', e.target.value)} autoComplete="off" className="max-w-32" />
+            )}
+          </Field>
         )}
 
         <label className="flex cursor-pointer items-start gap-3 rounded-[22px] bg-card p-4 shadow-soft">

@@ -42,7 +42,7 @@ function Editor({ outfit, items, count }: { outfit?: Outfit; items: Item[]; coun
   const navigate = useNavigate()
   const toast = useToast()
 
-  const ordered = useMemo(() => homeGrid(items, buildWearIndex(wears ?? []), picked, Infinity).shown, [items, wears, picked])
+  const ordered = useMemo(() => homeGrid(items, buildWearIndex(wears ?? [], items), picked, Infinity).shown, [items, wears, picked])
   const shown = query.trim() ? ordered.filter((i) => normalizeSearch(i.name).includes(normalizeSearch(query))) : ordered
   const valid = picked.size >= 2 && name.trim().length > 0
 

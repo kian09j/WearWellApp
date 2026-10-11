@@ -4,7 +4,7 @@ Wear what you love. Buy better, not more.
 
 WearWell ([wearwellapp.com](https://www.wearwellapp.com)) is a wardrobe tracker by [Polska Picks](https://polskapicks.com). It helps people wear what they already own, see the real cost per wear of their clothes, and resell what they no longer use. Everything is stored on the device: no account, no tracking.
 
-Status: **Phase 1 complete** (11 of 11 steps). Phase 2 (AI wardrobe photo scan, background removal, CSV import) has not started.
+Status: **Phase 1 complete**. Phase 2: CSV import done; AI wardrobe photo scan and background removal not started.
 
 ## What it does
 
@@ -18,6 +18,7 @@ Status: **Phase 1 complete** (11 of 11 steps). Phase 2 (AI wardrobe photo scan, 
 - **Stats**: most and least worn, best value, cost per wear by category, colours, wardrobe value, share worn in the last 90 days, money recovered.
 - **Works offline** (installable PWA) and ships as **iOS and Android apps** (Capacitor) with an optional daily reminder.
 - **Backup**: export / import everything, photos included, as one file.
+- **CSV import** from other wardrobe apps or a spreadsheet: columns matched automatically (English and Polish headers), categories, colours, dates and prices understood loosely, a preview before anything is saved, duplicates skipped, and Undo. "Times worn" counts towards cost per wear as wears from before WearWell. A template is included.
 
 ## Run it
 
@@ -146,4 +147,8 @@ Phase 1 (done):
 10. ✅ Offline (PWA) and native iOS / Android apps (Capacitor), daily reminder
 11. ✅ Polish: accessibility pass, empty states, privacy page, README
 
-Phase 2 (not started): wardrobe photo scan (AI, via one serverless function), background removal, CSV import.
+Phase 2:
+
+- ✅ CSV import (Settings → Your data, the Wardrobe empty state, or the welcome screen)
+- Wardrobe photo scan (AI, via one serverless function)
+- Background removal

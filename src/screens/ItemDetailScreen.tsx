@@ -34,7 +34,7 @@ export function ItemDetailScreen() {
   const today = useToday()
   const nudge = useNudges()?.byItem.get(id ?? '')
 
-  const stat = useMemo(() => (id ? wearStat(buildWearIndex(wears ?? []), id) : undefined), [wears, id])
+  const stat = useMemo(() => (id ? wearStat(buildWearIndex(wears ?? [], item ? [item] : []), id) : undefined), [wears, id, item])
 
   if (item === undefined) return null
   if (item === null) {
@@ -149,7 +149,7 @@ export function ItemDetailScreen() {
           </Link>
         )}
 
-        {item.kind === 'owned' && <WearHistory itemId={item.id} wears={wears ?? []} />}
+        {item.kind === 'owned' && <WearHistory itemId={item.id} wears={wears ?? []} priorWears={item.priorWears} />}
 
         {item.notes && (
           <section className="mt-5">

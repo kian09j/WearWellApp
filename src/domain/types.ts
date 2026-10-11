@@ -90,6 +90,8 @@ export interface Item extends SyncFields {
   condition?: Condition
   notes?: string
   photoId?: string
+  /** Wears from before WearWell (imported from another app or entered by hand). No dates. */
+  priorWears?: number
   status: ItemStatus
   favourite: boolean
   /** Created by the quick count; shown with an "add details" hint. */

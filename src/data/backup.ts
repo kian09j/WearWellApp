@@ -110,6 +110,7 @@ function checkItem(r: unknown): r is Item {
     optStr(r.size) &&
     optStr(r.notes) &&
     optStr(r.photoId) &&
+    (r.priorWears === undefined || (Number.isInteger(r.priorWears) && (r.priorWears as number) >= 0)) &&
     (r.condition === undefined || CONDITIONS.includes(r.condition as string)) &&
     STATUSES.includes(r.status as string) &&
     typeof r.favourite === 'boolean' &&

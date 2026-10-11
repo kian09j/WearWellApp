@@ -21,7 +21,7 @@ export function useNudges(): NudgeState | undefined {
   return useMemo(() => {
     if (!items || !wears || !settings) return undefined
     const all = settings.nudgesEnabled
-      ? findNudges(items, buildWearIndex(wears), makeUnwornContext(today, wears, items), settings.nudgeDays, { includeSnoozed: true })
+      ? findNudges(items, buildWearIndex(wears, items), makeUnwornContext(today, wears, items), settings.nudgeDays, { includeSnoozed: true })
       : []
     return { all, byItem: new Map(all.map((n) => [n.item.id, n])), stage1Days: settings.nudgeDays.stage1 }
   }, [items, wears, settings, today])

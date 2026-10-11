@@ -1,5 +1,6 @@
 import { useId, useState, type ReactNode } from 'react'
-import { Download, ExternalLink, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { Download, ExternalLink, FileSpreadsheet, Sparkles, Trash2, Upload, X } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import {
   BackupError,
   backupFileName,
@@ -68,6 +69,7 @@ export function SettingsScreen() {
   const settings = useSettings()
   const hasSample = useHasSampleData()
   const toast = useToast()
+  const navigate = useNavigate()
   const [pendingImport, setPendingImport] = useState<BackupFile | null>(null)
   const [confirmErase, setConfirmErase] = useState(false)
 
@@ -217,6 +219,7 @@ export function SettingsScreen() {
         </p>
         <ActionRow icon={<Download size={18} />} title={t('settings.export')} hint={t('settings.exportHint')} onClick={exportBackup} />
         <ActionRow icon={<Upload size={18} />} title={t('settings.import')} hint={t('settings.importHint')} onClick={chooseImport} />
+        <ActionRow icon={<FileSpreadsheet size={18} />} title={t('settings.importCsv')} hint={t('settings.importCsvHint')} onClick={() => navigate('/import')} />
       </Section>
 
       <Section title={t('settings.sample')}>

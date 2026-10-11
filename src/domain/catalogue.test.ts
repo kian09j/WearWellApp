@@ -87,6 +87,17 @@ describe('wear index', () => {
     expect(index.get('a')).toEqual({ count: 3, first: '2026-09-01', last: '2026-10-09' })
     expect(index.get('b')).toBeUndefined()
   })
+
+  it('adds wears from before WearWell to the count, without inventing dates', () => {
+    const index = buildWearIndex([{ itemId: 'a', date: '2026-10-05' }], [
+      { id: 'a', priorWears: 20 },
+      { id: 'b', priorWears: 7 },
+      { id: 'c' },
+    ])
+    expect(index.get('a')).toEqual({ count: 21, first: '2026-10-05', last: '2026-10-05' })
+    expect(index.get('b')).toEqual({ count: 7 })
+    expect(index.get('c')).toBeUndefined()
+  })
 })
 
 describe('quick count names and photo sizing', () => {

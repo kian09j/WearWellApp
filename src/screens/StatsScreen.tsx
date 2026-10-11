@@ -89,7 +89,7 @@ export function StatsScreen() {
   const [editing, setEditing] = useState<CategoryId>()
 
   const currency = settings?.currency ?? 'PLN'
-  const wearIndex = useMemo(() => buildWearIndex(wears ?? []), [wears])
+  const wearIndex = useMemo(() => buildWearIndex(wears ?? [], items ?? []), [wears, items])
   const groups = useMemo(() => wardrobeCpw(items ?? [], wearIndex), [items, wearIndex])
   const categories = useMemo(() => categoryCpw(items ?? [], wearIndex, currency), [items, wearIndex, currency])
   const main = groups.get(currency)

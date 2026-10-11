@@ -12,7 +12,7 @@ import { useToday } from '../ui/useToday'
 const VISIBLE = 6
 
 /** A piece's wears, newest first, each removable, plus logging a wear for any past day. */
-export function WearHistory({ itemId, wears }: { itemId: string; wears: readonly WearLog[] }) {
+export function WearHistory({ itemId, wears, priorWears = 0 }: { itemId: string; wears: readonly WearLog[]; priorWears?: number }) {
   const today = useToday()
   const [showAll, setShowAll] = useState(false)
   const [date, setDate] = useState(() => addDays(today, -1))
@@ -62,6 +62,7 @@ export function WearHistory({ itemId, wears }: { itemId: string; wears: readonly
             ))}
           </ul>
         )}
+        {priorWears > 0 && <p className="border-t border-thread py-3 text-[14px] text-muted">{t('item.priorWears', { count: priorWears })}</p>}
         {dates.length > VISIBLE && !showAll && (
           <button type="button" onClick={() => setShowAll(true)} className="min-h-11 w-full text-[14px] font-semibold text-mak">
             {t('item.historyMore', { count: dates.length - VISIBLE })}

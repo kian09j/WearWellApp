@@ -121,7 +121,7 @@ export function TodayScreen() {
     )
 
   const allWears = useMemo(() => wears ?? [], [wears])
-  const wearIndex = useMemo(() => buildWearIndex(allWears), [allWears])
+  const wearIndex = useMemo(() => buildWearIndex(allWears, items ?? []), [allWears, items])
   const days = useMemo(() => loggedDays(allWears), [allWears])
   const logged = useMemo(() => wornOn(allWears, date), [allWears, date])
   const wearable = useMemo(() => (items ?? []).filter(isWearable), [items])
@@ -140,7 +140,7 @@ export function TodayScreen() {
     // judged on wears up to yesterday, so wearing the piece today keeps it on the card
     const before = allWears.filter((w) => w.date < today)
     const ctx = makeUnwornContext(today, before, items ?? [])
-    return pickRediscovery(items ?? [], buildWearIndex(before), wornOn(allWears, today), ctx, skipped)
+    return pickRediscovery(items ?? [], buildWearIndex(before, items ?? []), wornOn(allWears, today), ctx, skipped)
   }, [items, allWears, today, skipped])
   const nudge = nudges ? todaysNudge(nudges.all, rediscovery?.item.id) : null
   const loggedList = [...logged].filter((id) => wearableIds.has(id))

@@ -21,7 +21,7 @@ export function WishlistPanel({ item }: { item: Item }) {
   const back = useBack('/before-you-buy')
   const [confirming, setConfirming] = useState(false)
 
-  const wearIndex = useMemo(() => buildWearIndex(wears ?? []), [wears])
+  const wearIndex = useMemo(() => buildWearIndex(wears ?? [], items ?? []), [wears, items])
   const similar = useMemo(() => similarOwned(items ?? [], item.category, item.colour, wearIndex), [items, item, wearIndex])
   const cooling = coolingOffState(item, today)
   const frequency = item.wishlist ? nearestFrequency(item.wishlist.wearsPerMonth) : undefined
