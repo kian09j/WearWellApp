@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
-import { Heart, Pencil, Trash2 } from 'lucide-react'
+import { Heart, Pencil, Tag, Trash2 } from 'lucide-react'
 import { deleteItem, restoreItem, updateItem, useItem, useWears } from '../data'
 import { isAllYear } from '../domain/dates'
 import { buildWearIndex, wearStat } from '../domain/wearStats'
@@ -129,7 +129,20 @@ export function ItemDetailScreen() {
           {item.condition && <Fact label={t('item.condition')}>{t(`conditions.${item.condition}`)}</Fact>}
           <Fact label={t('item.seasons')}>{seasons}</Fact>
           <Fact label={t('item.status')}>{t(`statuses.${item.status}`)}</Fact>
+          {item.status === 'sold' && item.sale && (
+            <Fact label={t('item.sold')}>{t('item.soldFor', { amount: formatMoney(item.sale), date: formatDate(item.sale.date, 'dayMonth') })}</Fact>
+          )}
         </dl>
+
+        {item.kind === 'owned' && item.status !== 'donated' && (
+          <Link
+            to={`/item/${item.id}/sell`}
+            className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border-[1.5px] border-ink/15 bg-card text-[15px] font-semibold hover:border-ink/45"
+          >
+            <Tag size={17} aria-hidden="true" />
+            {t('item.sellOnVinted')}
+          </Link>
+        )}
 
         {item.kind === 'owned' && <WearHistory itemId={item.id} wears={wears ?? []} />}
 

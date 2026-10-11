@@ -3,7 +3,7 @@ import { useParams } from 'react-router'
 import { Camera, ImagePlus, X } from 'lucide-react'
 import type { CategoryId, ColourId, Condition, CurrencyCode, Item, ItemStatus, Season } from '../domain/types'
 import { deletePhoto, savePhoto, updateItem, useItem, usePhotoUrl, useSettings, type NewPhoto } from '../data'
-import { today } from '../domain/dates'
+import { isDateKey, today } from '../domain/dates'
 import { CURRENCIES, isCurrencyCode, parsePriceInput } from '../domain/money'
 import { t } from '../i18n'
 import { ImageError, processImage } from '../platform/images'
@@ -31,6 +31,8 @@ interface Draft {
   status: ItemStatus
   favourite: boolean
   notes: string
+  salePrice: string
+  saleDate: string
 }
 
 function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
@@ -48,6 +50,8 @@ function toDraft(item: Item, defaultCurrency: CurrencyCode): Draft {
     status: item.status,
     favourite: item.favourite,
     notes: item.notes ?? '',
+    salePrice: item.sale ? String(item.sale.amount).replace('.', ',') : '',
+    saleDate: item.sale?.date ?? '',
   }
 }
 
@@ -77,7 +81,7 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
   const [photo, setPhoto] = useState<PhotoChange>({ state: 'keep' })
   const [busy, setBusy] = useState(false)
   const [photoError, setPhotoError] = useState(false)
-  const [errors, setErrors] = useState<{ name?: string; price?: string }>({})
+  const [errors, setErrors] = useState<{ name?: string; price?: string; salePrice?: string }>({})
   const [confirmDiscard, setConfirmDiscard] = useState(false)
   const [saving, setSaving] = useState(false)
   const cameraInput = useRef<HTMLInputElement>(null)
@@ -116,12 +120,14 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
   const save = async () => {
     const name = draft.name.trim()
     const price = parsePriceInput(draft.price)
+    const salePrice = draft.status === 'sold' ? parsePriceInput(draft.salePrice) : undefined
     const nextErrors = {
       name: name ? undefined : t('editor.nameRequired'),
       price: price === null ? t('editor.priceInvalid') : undefined,
+      salePrice: salePrice === null ? t('editor.priceInvalid') : undefined,
     }
     setErrors(nextErrors)
-    if (nextErrors.name || nextErrors.price) {
+    if (nextErrors.name || nextErrors.price || nextErrors.salePrice) {
       // bring the first problem into view
       requestAnimationFrame(() => document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
       return
@@ -149,6 +155,10 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
       status: draft.status,
       favourite: draft.favourite,
       notes: draft.notes.trim() || undefined,
+      sale:
+        draft.status === 'sold' && salePrice !== undefined && salePrice !== null
+          ? { amount: salePrice, currency: draft.currency, date: isDateKey(draft.saleDate) ? draft.saleDate : today() }
+          : undefined,
       photoId,
       placeholder: false,
     })
@@ -296,6 +306,17 @@ function Editor({ item, defaultCurrency }: { item: Item; defaultCurrency: Curren
             </Select>
           )}
         </Field>
+
+        {draft.status === 'sold' && (
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={`${t('editor.salePrice')} (${draft.currency})`} error={errors.salePrice} optional>
+              {(p) => <TextInput {...p} inputMode="decimal" value={draft.salePrice} onChange={(e) => update('salePrice', e.target.value)} autoComplete="off" />}
+            </Field>
+            <Field label={t('editor.saleDate')}>
+              {(p) => <TextInput {...p} type="date" max={today()} value={draft.saleDate} onChange={(e) => update('saleDate', e.target.value)} />}
+            </Field>
+          </div>
+        )}
 
         <label className="flex cursor-pointer items-start gap-3 rounded-[22px] bg-card p-4 shadow-soft">
           <input

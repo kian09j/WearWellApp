@@ -7,7 +7,8 @@ import { CATEGORIES, isCategoryId } from '../domain/categories'
 import { filterItems, sortItems, VIEW_STATUSES, type SortKey, type WardrobeView } from '../domain/catalogue'
 import { today } from '../domain/dates'
 import { buildWearIndex, wearStat } from '../domain/wearStats'
-import { t, type TKey } from '../i18n'
+import { moneyRecovered } from '../domain/resale'
+import { formatMoney, t, type TKey } from '../i18n'
 import { Button } from '../ui/Button'
 import { Flower } from '../ui/Flower'
 import { ItemTile } from '../ui/ItemThumb'
@@ -79,6 +80,10 @@ export function WardrobeScreen() {
     [owned, view, category, inSeason, query, sort, wearIndex, waiting, nudges],
   )
   const waitingCount = nudges?.all.length ?? 0
+  const recovered = useMemo(
+    () => [...moneyRecovered(items ?? []).entries()].map(([currency, r]) => ({ amount: r.amount, currency })),
+    [items],
+  )
 
   if (items === undefined) return <Screen title={t('wardrobe.title')}>{null}</Screen>
 
@@ -204,6 +209,11 @@ export function WardrobeScreen() {
       </div>
 
       {waiting && <p className="mb-4 rounded-[18px] bg-tint-bez px-4 py-3 text-[13.5px] text-ink/80">{t('nudges.filterHint', { days: nudges?.stage1Days ?? 30 })}</p>}
+      {view === 'gone' && recovered.length > 0 && (
+        <p className="mb-4 rounded-[18px] bg-tint-mieta px-4 py-3 text-[14px] font-semibold">
+          {t('wardrobe.recovered', { amount: recovered.map((r) => formatMoney(r)).join(' + ') })}
+        </p>
+      )}
 
       {waiting && shown.length === 0 ? (
         <p className="card-soft px-6 py-10 text-center text-muted">{t('nudges.filterEmpty')}</p>

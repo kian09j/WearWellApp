@@ -128,6 +128,16 @@ export function formatDate(key: DateKey, style: DateStyle = 'medium'): string {
   return new Intl.DateTimeFormat(formatLocale, options).format(fromDateKey(key))
 }
 
+/** Country name in the UI language, e.g. "Poland" for "pl" ("uk" maps to the GB region). */
+export function formatRegion(code: string): string {
+  const region = code === 'uk' ? 'GB' : code.toUpperCase()
+  try {
+    return new Intl.DisplayNames([language], { type: 'region' }).of(region) ?? region
+  } catch {
+    return region
+  }
+}
+
 export function formatTimestamp(iso: string): string {
   return new Intl.DateTimeFormat(formatLocale, { dateStyle: 'medium' }).format(new Date(iso))
 }

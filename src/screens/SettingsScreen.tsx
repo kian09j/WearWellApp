@@ -16,7 +16,8 @@ import {
   type BackupFile,
 } from '../data'
 import { CURRENCIES, isCurrencyCode } from '../domain/money'
-import { formatTimestamp, t } from '../i18n'
+import { VINTED_COUNTRIES } from '../domain/vinted'
+import { formatRegion, formatTimestamp, t } from '../i18n'
 import { pickFile, saveTextFile } from '../platform/files'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Wordmark } from '../ui/Flower'
@@ -118,6 +119,55 @@ export function SettingsScreen() {
           </select>
         </div>
       </Section>
+
+      {settings && (
+        <Section title={t('settings.vinted')}>
+          <div className="flex flex-col gap-4 px-5 py-4">
+            <div>
+              <label htmlFor="vinted-country" className="block font-semibold">
+                {t('settings.vintedCountry')}
+              </label>
+              <p id="vinted-country-hint" className="text-[13.5px] text-muted">
+                {t('settings.vintedCountryHint')}
+              </p>
+              <select
+                id="vinted-country"
+                aria-describedby="vinted-country-hint"
+                value={settings.vintedCountry}
+                onChange={(e) => void updateSettings({ vintedCountry: e.target.value })}
+                className="mt-2 min-h-12 w-full rounded-2xl border-[1.5px] border-ink/15 bg-paper px-4 text-[15px]"
+              >
+                {[...VINTED_COUNTRIES]
+                  .map((c) => ({ ...c, name: formatRegion(c.code) }))
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((c) => (
+                    <option key={c.code} value={c.code}>
+                      {c.name} ({c.domain})
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="listing-language" className="block font-semibold">
+                {t('settings.listingLanguage')}
+              </label>
+              <p id="listing-language-hint" className="text-[13.5px] text-muted">
+                {t('settings.listingLanguageHint')}
+              </p>
+              <select
+                id="listing-language"
+                aria-describedby="listing-language-hint"
+                value={settings.listingLanguage}
+                onChange={(e) => void updateSettings({ listingLanguage: e.target.value === 'en' ? 'en' : 'pl' })}
+                className="mt-2 min-h-12 w-full rounded-2xl border-[1.5px] border-ink/15 bg-paper px-4 text-[15px]"
+              >
+                <option value="pl">{t('sell.polish')}</option>
+                <option value="en">{t('sell.english')}</option>
+              </select>
+            </div>
+          </div>
+        </Section>
+      )}
 
       {settings && (
         <Section title={t('settings.nudges')}>
