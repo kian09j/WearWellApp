@@ -1,5 +1,8 @@
-// Open a website outside the app (Vinted, polskapicks.com). The native apps (step 10) swap in
-// the system browser behind this same function.
+import { Browser } from '@capacitor/browser'
+import { isNative } from './native'
+
+/** Open a website outside the app (Vinted, polskapicks.com): the system browser in the apps. */
 export function openExternal(url: string): void {
-  window.open(url, '_blank', 'noopener,noreferrer')
+  if (isNative()) void Browser.open({ url })
+  else window.open(url, '_blank', 'noopener,noreferrer')
 }

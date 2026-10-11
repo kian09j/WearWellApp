@@ -1,7 +1,17 @@
-// File save / open. On the web this uses a download link and a file input; the native
-// apps (step 10) will swap in the share sheet and file picker behind the same functions.
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem'
+import { Share } from '@capacitor/share'
+import { isNative } from './native'
 
-export function saveTextFile(name: string, text: string, type = 'application/json'): void {
+// File save / open. On the web: a download link and a file input. In the native apps the
+// file is written to the app's cache and handed to the share sheet, so it can go to Files,
+// Google Drive, email or anywhere else. Picking a file uses a file input everywhere.
+
+export async function saveTextFile(name: string, text: string, type = 'application/json'): Promise<void> {
+  if (isNative()) {
+    const { uri } = await Filesystem.writeFile({ path: name, data: text, directory: Directory.Cache, encoding: Encoding.UTF8 })
+    await Share.share({ title: name, files: [uri] })
+    return
+  }
   const url = URL.createObjectURL(new Blob([text], { type }))
   const a = document.createElement('a')
   a.href = url

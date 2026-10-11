@@ -1,8 +1,11 @@
-// A tiny buzz on log, where the device supports it (Android browsers). The native apps
-// (step 10) will use the system haptics behind this same function, which covers iPhone too.
+import { Haptics, ImpactStyle } from '@capacitor/haptics'
+import { isNative } from './native'
+
+/** A tiny buzz when something is logged: system haptics in the apps, vibration on Android web. */
 export function tapFeedback(): void {
   try {
-    navigator.vibrate?.(8)
+    if (isNative()) void Haptics.impact({ style: ImpactStyle.Light })
+    else navigator.vibrate?.(8)
   } catch {
     // not supported: silent
   }

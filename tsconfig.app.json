@@ -10,7 +10,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "types": [
-      "vite/client"
+      "vite/client",
+      "vite-plugin-pwa/client"
     ],
     "jsx": "react-jsx",
     "strict": true,

@@ -175,6 +175,11 @@ const en = {
     snoozedTag: 'snoozed',
   },
 
+  reminder: {
+    title: 'What are you wearing today?',
+    body: 'Log it in one tap.',
+  },
+
   sell: {
     title: 'Sell on Vinted',
     suggestion: 'Suggested price',
@@ -456,6 +461,14 @@ const en = {
     preferences: 'Preferences',
     currency: 'Currency',
     currencyHint: 'Used for new items. Existing prices keep their own currency.',
+    reminder: 'Daily reminder',
+    reminderEnable: 'Remind me to log my outfit',
+    reminderHint: 'A gentle notification once a day. It is scheduled on your phone; nothing is sent anywhere.',
+    reminderTime: 'Time',
+    reminderWeb: 'Available in the WearWell app for iPhone and Android.',
+    reminderDenied: 'Notifications are switched off for WearWell. You can turn them on in your phone settings.',
+    reminderOn: 'Reminder set for {time}',
+    reminderOff: 'Reminder off',
     beforeYouBuy: 'Before you buy',
     coolingOff: 'Seven-day cooling-off',
     coolingOffHint: 'New wishlist pieces wait a week before you mark them as bought. You can always buy anyway.',

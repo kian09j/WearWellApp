@@ -18,12 +18,14 @@ import {
 import { CURRENCIES, isCurrencyCode } from '../domain/money'
 import { VINTED_COUNTRIES } from '../domain/vinted'
 import { formatRegion, formatTimestamp, t } from '../i18n'
+import { openExternal } from '../platform/external'
 import { pickFile, saveTextFile } from '../platform/files'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Wordmark } from '../ui/Flower'
 import { Screen } from '../ui/Screen'
 import { useToast } from '../ui/Toast'
 import { NudgeSettings } from './NudgeSettings'
+import { ReminderSettings } from './ReminderSettings'
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -68,8 +70,12 @@ export function SettingsScreen() {
 
   const exportBackup = async () => {
     const backup = await createBackup()
-    saveTextFile(backupFileName(), JSON.stringify(backup))
-    toast(t('settings.exported'))
+    try {
+      await saveTextFile(backupFileName(), JSON.stringify(backup))
+      toast(t('settings.exported'))
+    } catch {
+      // the share sheet was closed without choosing anywhere to save: nothing to say
+    }
   }
 
   const chooseImport = async () => {
@@ -119,6 +125,12 @@ export function SettingsScreen() {
           </select>
         </div>
       </Section>
+
+      {settings && (
+        <Section title={t('settings.reminder')}>
+          <ReminderSettings settings={settings} />
+        </Section>
+      )}
 
       {settings && (
         <Section title={t('settings.beforeYouBuy')}>
@@ -233,6 +245,10 @@ export function SettingsScreen() {
             href="https://polskapicks.com"
             target="_blank"
             rel="noopener"
+            onClick={(e) => {
+              e.preventDefault()
+              openExternal('https://polskapicks.com')
+            }}
             className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-full border-[1.5px] border-ink/15 px-5 text-[15px] font-semibold hover:border-ink/45"
           >
             {t('settings.visitPolskaPicks')}

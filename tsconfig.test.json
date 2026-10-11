@@ -11,6 +11,7 @@
     "moduleResolution": "bundler",
     "types": [
       "vite/client",
+      "vite-plugin-pwa/client",
       "node"
     ],
     "jsx": "react-jsx",
