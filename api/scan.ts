@@ -1,8 +1,8 @@
 // Vercel serverless function: POST /api/scan. The only server-side code in WearWell.
 // Settings live in Vercel → Project → Settings → Environment Variables (see README).
-import { claudeScanModel } from '../server/claude'
-import { limiterFromEnv } from '../server/rateLimit'
-import { handleScan } from '../server/scanHandler'
+import { claudeScanModel } from '../server/claude.js'
+import { limiterFromEnv } from '../server/rateLimit.js'
+import { handleScan } from '../server/scanHandler.js'
 
 const env = process.env
 const model = claudeScanModel(env)

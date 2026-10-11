@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { ScanModel } from './claude'
-import { memoryLimiter, upstashLimiter } from './rateLimit'
-import { handleScan } from './scanHandler'
+import type { ScanModel } from './claude.js'
+import { memoryLimiter, upstashLimiter } from './rateLimit.js'
+import { handleScan } from './scanHandler.js'
 
 const IMAGE = 'A'.repeat(400) // a valid base64 string, long enough
 const DEVICE = '0f8b2c4e-1111-4222-8333-944455556666'

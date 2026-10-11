@@ -1,6 +1,6 @@
-import { SCAN_MAX_BASE64, SCAN_MEDIA_TYPES, validateScanResult, type ScanMediaType } from '../src/domain/scan'
-import type { ScanModel } from './claude'
-import type { Limiter } from './rateLimit'
+import { SCAN_MAX_BASE64, SCAN_MEDIA_TYPES, validateScanResult, type ScanMediaType } from '../src/domain/scan.js'
+import type { ScanModel } from './claude.js'
+import type { Limiter } from './rateLimit.js'
 
 // POST /api/scan: { image: base64, mediaType, deviceId } -> { items, notes, remaining, limit }
 // The API key never leaves the server. The photo is passed to Claude and dropped; it is never

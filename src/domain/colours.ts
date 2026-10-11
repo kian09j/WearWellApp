@@ -1,4 +1,4 @@
-import type { ColourId } from './types'
+import type { ColourId } from './types.js'
 
 export interface ColourDef {
   id: ColourId

@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
-import { CATEGORY_IDS } from '../src/domain/categories'
-import { COLOUR_IDS } from '../src/domain/colours'
-import { SCAN_OUTPUT_SCHEMA, type ScanMediaType } from '../src/domain/scan'
+import { CATEGORY_IDS } from '../src/domain/categories.js'
+import { COLOUR_IDS } from '../src/domain/colours.js'
+import { SCAN_OUTPUT_SCHEMA, type ScanMediaType } from '../src/domain/scan.js'
 
 // One request to Claude per scan: the photo plus instructions, answered in a fixed JSON shape
 // (structured output). The photo is sent and forgotten: nothing here stores it.

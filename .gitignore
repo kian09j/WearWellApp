@@ -10,3 +10,4 @@ dist
 # native build output (added in step 10)
 android/app/build
 ios/App/Pods
+

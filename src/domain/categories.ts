@@ -1,4 +1,4 @@
-import type { CategoryId, Season } from './types'
+import type { CategoryId, Season } from './types.js'
 
 export interface CategoryDef {
   id: CategoryId

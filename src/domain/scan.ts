@@ -1,6 +1,6 @@
-import type { CategoryId, ColourId } from './types'
-import { CATEGORY_IDS, isCategoryId } from './categories'
-import { COLOUR_IDS, isColourId } from './colours'
+import type { CategoryId, ColourId } from './types.js'
+import { CATEGORY_IDS, isCategoryId } from './categories.js'
+import { COLOUR_IDS, isColourId } from './colours.js'
 
 // The wardrobe photo scan: what the server asks Claude for, and how both the server and the
 // app check the answer before anything reaches the review screen. Shared by api/ and src/.
