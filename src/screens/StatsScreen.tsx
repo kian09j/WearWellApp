@@ -10,11 +10,14 @@ import { formatMoney, t } from '../i18n'
 import { Button } from '../ui/Button'
 import { CategoryIcon } from '../ui/CategoryIcon'
 import { Field, TextInput } from '../ui/fields'
-import { Flower } from '../ui/Flower'
 import { ProgressBar } from '../ui/ProgressBar'
 import { Screen } from '../ui/Screen'
 import { Sheet } from '../ui/Sheet'
 import { useToast } from '../ui/Toast'
+import { useToday } from '../ui/useToday'
+import { moneyRecovered } from '../domain/resale'
+import { bestCpw, colourBreakdown, highestCpw, leastWorn, mostWorn, wardrobeValue, wornShare } from '../domain/stats'
+import { ColourBars, moneyList, RankedList, StatSection, StatTile } from './StatsWidgets'
 
 function TargetSheet({
   category,
@@ -90,6 +93,17 @@ export function StatsScreen() {
   const main = groups.get(currency)
   const others = [...groups.values()].filter((g) => g.currency !== currency)
   const targets = settings?.targetCpw ?? {}
+  const today = useToday()
+  const value = useMemo(() => wardrobeValue(items ?? []), [items])
+  const share = useMemo(() => wornShare(items ?? [], wearIndex, today), [items, wearIndex, today])
+  const recovered = useMemo(() => [...moneyRecovered(items ?? []).entries()].map(([cur, r]) => ({ amount: r.amount, currency: cur })), [items])
+  const soldCount = useMemo(() => [...moneyRecovered(items ?? []).values()].reduce((n, r) => n + r.sold, 0), [items])
+  const donated = (items ?? []).filter((i) => i.kind === 'owned' && i.status === 'donated').length
+  const most = useMemo(() => mostWorn(items ?? [], wearIndex), [items, wearIndex])
+  const least = useMemo(() => leastWorn(items ?? [], wearIndex, today), [items, wearIndex, today])
+  const best = useMemo(() => bestCpw(items ?? [], wearIndex, currency), [items, wearIndex, currency])
+  const highest = useMemo(() => highestCpw(items ?? [], wearIndex, currency), [items, wearIndex, currency])
+  const colours = useMemo(() => colourBreakdown(items ?? []), [items])
 
   if (items === undefined || wears === undefined || settings === undefined) return <Screen title={t('stats.title')}>{null}</Screen>
 
@@ -134,6 +148,55 @@ export function StatsScreen() {
           </div>
         )}
       </section>
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <StatTile
+          label={t('stats.value')}
+          value={value.length ? moneyList(value) : '-'}
+          meta={value.length ? t('stats.valueMeta', { count: value.reduce((n, v) => n + v.priced, 0) }) : t('stats.valueNone')}
+        />
+        <StatTile label={t('stats.worn90')} value={`${Math.round(share.ratio * 100)}%`} meta={t('stats.worn90Meta', { worn: share.worn, total: share.total })}>
+          <ProgressBar ratio={share.ratio} label={t('stats.worn90')} className="mt-2" />
+        </StatTile>
+        <div className="col-span-2">
+          <StatTile
+            label={t('stats.recovered')}
+            value={recovered.length ? moneyList(recovered) : '-'}
+            meta={
+              <>
+                {recovered.length ? t('stats.recoveredMeta', { count: soldCount }) : t('stats.recoveredNone')}
+                {donated > 0 && ` · ${t('stats.donated', { count: donated })}`}
+              </>
+            }
+          />
+        </div>
+      </div>
+
+      <StatSection title={t('stats.mostWorn')}>
+        {most.length ? (
+          <RankedList rows={most} value={(r) => t('stats.times', { count: r.wears })} />
+        ) : (
+          <p className="card-soft px-5 py-5 text-[14.5px] text-muted">{t('stats.mostWornEmpty')}</p>
+        )}
+      </StatSection>
+
+      {least.length > 0 && (
+        <StatSection title={t('stats.leastWorn')} hint={t('stats.leastWornHint')}>
+          <RankedList rows={least} value={(r) => (r.wears ? t('stats.times', { count: r.wears }) : t('common.notWornYet'))} />
+        </StatSection>
+      )}
+
+      {best.length > 0 && (
+        <StatSection title={t('stats.bestCpw')} hint={t('stats.bestCpwHint')}>
+          <RankedList rows={best} value={(r) => t('cpw.short', { amount: money(r.cpw!) })} />
+        </StatSection>
+      )}
+
+      {highest.length > 0 && (
+        <StatSection title={t('stats.highestCpw')} hint={t('stats.highestCpwHint')}>
+          <RankedList rows={highest} value={(r) => t('cpw.short', { amount: money(r.cpw!) })} />
+        </StatSection>
+      )}
 
       <h2 className="label-caps mt-8 mb-2.5 px-1">{t('cpw.byCategory')}</h2>
       <ul className="card-soft divide-y divide-thread overflow-hidden">
@@ -182,10 +245,11 @@ export function StatsScreen() {
       </ul>
       <p className="mt-3 px-1 text-[13px] leading-relaxed text-muted">{t('cpw.how')}</p>
 
-      <section className="mt-8 rounded-[28px] bg-tint-niebo p-6">
-        <Flower size={40} petal="var(--color-chaber)" inner="var(--color-card)" />
-        <p className="mt-3 text-ink/80">{t('stats.teaser')}</p>
-      </section>
+      {colours.length > 0 && (
+        <StatSection title={t('stats.colours')} hint={t('stats.coloursHint')}>
+          <ColourBars shares={colours} />
+        </StatSection>
+      )}
 
       <Sheet open={!!editing} title={editing ? t('cpw.editTarget', { category: t(`categories.${editing}`) }) : ''} onClose={() => setEditing(undefined)}>
         {editing && (
