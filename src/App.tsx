@@ -15,6 +15,7 @@ import { OutfitsScreen } from './screens/OutfitsScreen'
 import { OutfitEditorScreen } from './screens/OutfitEditorScreen'
 import { SellScreen } from './screens/SellScreen'
 import { ImportScreen } from './screens/ImportScreen'
+import { ScanScreen } from './screens/ScanScreen'
 
 /** First run (nothing stored, not onboarded yet) goes to the welcome screen. */
 function OnboardingGate() {
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="welcome" element={<WelcomeScreen />} />
         <Route path="welcome/count" element={<QuickCountScreen />} />
         <Route path="import" element={<ImportScreen />} />
+        <Route path="scan" element={<ScanScreen />} />
         <Route element={<OnboardingGate />}>
           <Route element={<AppLayout />}>
             <Route index element={<TodayScreen />} />

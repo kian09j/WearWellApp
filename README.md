@@ -4,7 +4,7 @@ Wear what you love. Buy better, not more.
 
 WearWell ([wearwellapp.com](https://www.wearwellapp.com)) is a wardrobe tracker by [Polska Picks](https://polskapicks.com). It helps people wear what they already own, see the real cost per wear of their clothes, and resell what they no longer use. Everything is stored on the device: no account, no tracking.
 
-Status: **Phase 1 complete**. Phase 2: CSV import done; AI wardrobe photo scan and background removal not started.
+Status: **Phase 1 complete**. Phase 2: CSV import and AI photo scan done (the scan switches on once an API key is added); background removal not started.
 
 ## What it does
 
@@ -16,6 +16,7 @@ Status: **Phase 1 complete**. Phase 2: CSV import done; AI wardrobe photo scan a
 - **Vinted helper**: ready-to-copy listing title and description in Polish or English, a suggested price range, "Open Vinted", listed / sold status and a money-recovered total.
 - **Before you buy**: projected cost per wear after 3, 6 and 12 months, similar pieces already owned, and a wishlist with an optional seven-day cooling-off.
 - **Stats**: most and least worn, best value, cost per wear by category, colours, wardrobe value, share worn in the last 90 days, money recovered.
+- **Photo scan** (optional): photograph a shelf or rail, Claude lists the pieces it sees, and you check and edit every row before anything is added.
 - **Works offline** (installable PWA) and ships as **iOS and Android apps** (Capacitor) with an optional daily reminder.
 - **Backup**: export / import everything, photos included, as one file.
 - **CSV import** from other wardrobe apps or a spreadsheet: columns matched automatically (English and Polish headers), categories, colours, dates and prices understood loosely, a preview before anything is saved, duplicates skipped, and Undo. "Times worn" counts towards cost per wear as wears from before WearWell. A template is included.
@@ -78,12 +79,43 @@ App id: `com.wearwellapp.app`. Icons and splash screens are generated from `publ
 
 After any code change: `npm run native:sync` (build + copy into both projects).
 
+## Photo scan (Claude)
+
+The only server-side code is `api/scan.ts`, a Vercel function, with its logic in `server/`. The app shrinks the photo to 1600px; the function checks the request and the daily limits, sends the photo to Claude with a fixed JSON schema (structured output), validates the answer and returns the list. The photo is never stored or logged. The API key only exists in Vercel's environment variables, never in the code or the app.
+
+### Switch it on
+
+1. **API key**: at [console.anthropic.com](https://console.anthropic.com) add billing, create an API key, and set a monthly spend limit as a safety net.
+2. **Vercel**: Project → Settings → Environment Variables → add `ANTHROPIC_API_KEY` for Production (and Preview if you test there), then redeploy (Deployments → ⋯ → Redeploy).
+3. **Daily limits that hold across servers (recommended)**: Vercel → Storage / Marketplace → **Upstash Redis** (free tier) → connect it to the project. It adds the `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` (or `KV_REST_API_*`) variables the function looks for. Without it the limits only hold within one running server instance.
+
+Until step 2 is done, the app says "The photo scan is not switched on yet".
+
+### Optional settings (environment variables)
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `SCAN_DAILY_LIMIT` | 5 | Scans per phone per day |
+| `SCAN_IP_DAILY_LIMIT` | 20 | Scans per IP address per day |
+| `SCAN_GLOBAL_DAILY_LIMIT` | 100 | Scans for the whole app per day (the cost ceiling) |
+| `SCAN_MODEL` | `claude-opus-5-5` | Claude model used |
+| `SCAN_EFFORT` | `low` | `low`, `medium` or `high`: more thinking is slower and pricier |
+| `SCAN_ALLOWED_ORIGINS` | | Extra web origins allowed to call the function (comma separated) |
+
+### Cost
+
+With Claude Opus 5.5 ($4 per million input tokens, $20 per million output tokens), a 1600px photo is roughly 2,500 input tokens, and the answer plus a little thinking about 500 to 1,500 output tokens: **roughly $0.02 to $0.05 per scan**. At the default limits that is at most about $5 a day for the whole app. Check real usage in the Anthropic Console after the first scans. Claude Haiku 5.5 (`SCAN_MODEL=claude-haiku-5-5`) costs around 40 times less per token; whether it counts folded clothes as well is worth testing on your own photos before switching.
+
+### Test it locally
+
+The plain dev server has no functions. Run `npx vercel dev` (after `npx vercel link` and `npx vercel env pull`) to run the app and the function together, or point a dev build at a deployed site with `VITE_SCAN_API_URL=https://<your-preview>.vercel.app/api/scan npm run dev`.
+
 ## App store checklist
 
 - **Accounts**: Apple Developer Program ($99 a year) and Google Play Console ($25 once). Apple asks EU distributors for a trader status declaration (traders' contact details are shown on the store page).
 - **Google Play, new personal accounts**: a closed test with at least 12 testers for 14 days is required before you can publish to everyone. Plan for it.
 - **Privacy policy URL**: `https://www.wearwellapp.com/privacy.html` (from `public/privacy.html`). **Add a contact email** where the page says so before publishing.
-- **Privacy labels / Data safety**: Phase 1 collects no data and has no tracking, so both forms are "no data collected". Phase 2's photo scan will change this, and Apple then requires asking people before sending photos to a third-party AI.
+- **Privacy labels / Data safety**: no tracking and no accounts. With the photo scan, declare that photos the person chooses are sent to a third party (Anthropic) for app functionality, not stored and not linked to identity. The app already asks for consent before the first scan, as Apple requires for third-party AI.
 - **Permissions**: iOS camera and photo library texts are in `ios/App/App/Info.plist`; Android asks for notifications (Android 13+) only when the reminder is switched on.
 - **Store assets**: screenshots from the sample wardrobe work well; the icon is the rosette on paper.
 
@@ -101,6 +133,8 @@ src/
   platform/  Web vs native differences: files, share sheet, haptics, links, clipboard, reminders.
   ui/        Shared components: layout, tab bar, buttons, dialogs, sheets, pickers, toasts, icons.
   screens/   One file per screen, plus the cards they share.
+api/         The Vercel function for the photo scan (the only server code).
+server/      Its logic: request checks, daily limits, the Claude request.
 scripts/     Icon and splash generation for the native apps.
 android/ ios/  Capacitor native projects.
 ```
@@ -150,5 +184,5 @@ Phase 1 (done):
 Phase 2:
 
 - ✅ CSV import (Settings → Your data, the Wardrobe empty state, or the welcome screen)
-- Wardrobe photo scan (AI, via one serverless function)
+- ✅ Wardrobe photo scan (Claude, via one serverless function; needs the API key above)
 - Background removal

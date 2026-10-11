@@ -75,7 +75,10 @@ export function WelcomeScreen() {
         <Button variant="quiet" onClick={startEmpty}>
           {t('welcome.empty')}
         </Button>
-        <Link to="/import" className="mt-1 text-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
+        <Link to="/scan" className="mt-1 text-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
+          {t('scan.entryWelcome')}
+        </Link>
+        <Link to="/import" className="text-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
           {t('welcome.importCsv')}
         </Link>
         <p className="mt-2 text-center text-[13px] text-muted">{t('welcome.privacy')}</p>

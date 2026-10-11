@@ -151,6 +151,10 @@ export interface Settings {
   coolingOff: boolean
   reminder: { enabled: boolean; time: string }
   onboarded: boolean
+  /** Random id sent with photo scans so the server can apply a daily limit per device. */
+  deviceId?: string
+  /** When the person agreed to send scan photos to Anthropic (asked once, before the first scan). */
+  aiConsentAt?: Timestamp
   /** Pieces skipped with "Not today" on the rediscovery card, reset each day. */
   rediscovery?: { date: DateKey; skipped: string[] }
   updatedAt: Timestamp

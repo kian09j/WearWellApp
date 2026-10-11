@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
-import { ListChecks, Plus, Search } from 'lucide-react'
+import { Camera, ListChecks, Plus, Search } from 'lucide-react'
 import type { CategoryId } from '../domain/types'
 import { useItems, useWears } from '../data'
 import { CATEGORIES, isCategoryId } from '../domain/categories'
@@ -105,6 +105,13 @@ export function WardrobeScreen() {
             <Button variant="ghost" icon={<Plus size={18} aria-hidden="true" />} onClick={() => setAdding(true)}>
               {t('wardrobe.addPiece')}
             </Button>
+            <Link
+              to="/scan"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-[1.5px] border-ink/15 bg-card px-6 text-[15px] font-semibold hover:border-ink/45"
+            >
+              <Camera size={18} aria-hidden="true" />
+              {t('scan.entryWardrobe')}
+            </Link>
             <Link to="/import" className="inline-flex min-h-11 items-center justify-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
               {t('wardrobe.importCsv')}
             </Link>

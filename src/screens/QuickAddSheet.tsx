@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { Camera } from 'lucide-react'
 import type { CategoryId } from '../domain/types'
 import { addItem } from '../data'
 import { t } from '../i18n'
@@ -53,6 +54,17 @@ export function QuickAddSheet({ open, onClose }: { open: boolean; onClose: () =>
           )}
         </Field>
         <CategoryPicker label={t('quickAdd.category')} value={category} onChange={setCategory} />
+        <button
+          type="button"
+          onClick={() => {
+            close()
+            navigate('/scan')
+          }}
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-tint-niebo px-4 text-[14.5px] font-semibold"
+        >
+          <Camera size={18} aria-hidden="true" />
+          {t('scan.entryQuickAdd')}
+        </button>
         <div className="sticky bottom-0 -mx-5 flex flex-col gap-2 bg-paper px-5 pt-2 pb-1">
           <Button type="submit" block disabled={!category}>
             {t('quickAdd.save')}
