@@ -13,6 +13,7 @@ import { Flower } from '../ui/Flower'
 import { ItemTile } from '../ui/ItemThumb'
 import { Screen } from '../ui/Screen'
 import { QuickAddSheet } from './QuickAddSheet'
+import { useNudges } from './useNudges'
 
 const VIEWS: { id: WardrobeView; label: TKey }[] = [
   { id: 'wardrobe', label: 'wardrobe.viewWardrobe' },
@@ -45,7 +46,9 @@ export function WardrobeScreen() {
   const catParam = params.get('cat')
   const category: CategoryId | undefined = isCategoryId(catParam) ? catParam : undefined
   const inSeason = params.get('season') === '1'
+  const waiting = params.get('wait') === '1' && view === 'wardrobe'
   const query = params.get('q') ?? ''
+  const nudges = useNudges()
   const sort = (SORTS.find((s) => s.id === params.get('sort'))?.id ?? 'recent') as SortKey
 
   const set = (key: string, value: string | undefined) => {
@@ -67,12 +70,15 @@ export function WardrobeScreen() {
   const shown = useMemo(
     () =>
       sortItems(
-        filterItems(owned, { view, category, inSeasonOn: inSeason ? today() : undefined, query }),
+        filterItems(owned, { view, category, inSeasonOn: inSeason ? today() : undefined, query }).filter(
+          (i) => !waiting || nudges?.byItem.has(i.id),
+        ),
         sort,
         wearIndex,
       ),
-    [owned, view, category, inSeason, query, sort, wearIndex],
+    [owned, view, category, inSeason, query, sort, wearIndex, waiting, nudges],
   )
+  const waitingCount = nudges?.all.length ?? 0
 
   if (items === undefined) return <Screen title={t('wardrobe.title')}>{null}</Screen>
 
@@ -144,6 +150,17 @@ export function WardrobeScreen() {
         >
           {t('wardrobe.inSeason')}
         </button>
+        {view === 'wardrobe' && (waitingCount > 0 || waiting) && (
+          <button
+            type="button"
+            aria-pressed={waiting}
+            onClick={() => set('wait', waiting ? undefined : '1')}
+            className={`${chip} ${waiting ? 'border-ink bg-ink text-card' : 'border-bez bg-tint-bez text-ink hover:border-ink/30'}`}
+          >
+            {t('nudges.filter')}
+            <span className={`rounded-full px-1.5 text-[12px] ${waiting ? 'bg-card/20' : 'bg-card'}`}>{waitingCount}</span>
+          </button>
+        )}
         <span className="my-2 w-px shrink-0 bg-ink/15" aria-hidden="true" />
         <button
           type="button"
@@ -186,7 +203,11 @@ export function WardrobeScreen() {
         </label>
       </div>
 
-      {shown.length === 0 ? (
+      {waiting && <p className="mb-4 rounded-[18px] bg-tint-bez px-4 py-3 text-[13.5px] text-ink/80">{t('nudges.filterHint', { days: nudges?.stage1Days ?? 30 })}</p>}
+
+      {waiting && shown.length === 0 ? (
+        <p className="card-soft px-6 py-10 text-center text-muted">{t('nudges.filterEmpty')}</p>
+      ) : shown.length === 0 ? (
         <p className="card-soft px-6 py-10 text-center text-muted">
           {inView.length === 0
             ? t(view === 'archived' ? 'wardrobe.emptyArchived' : 'wardrobe.emptyGone')

@@ -6,6 +6,7 @@ import { loadSampleData, logMany, logWear, saveOutfit, unlogMany, unlogWear, use
 import { normalizeSearch } from '../domain/catalogue'
 import { addDays, isDateKey } from '../domain/dates'
 import { homeGrid, isWearable, sameAsDayBefore, wornOn } from '../domain/logging'
+import { todaysNudge } from '../domain/nudges'
 import { pickRediscovery } from '../domain/rediscovery'
 import { loggedDays, streakMessage } from '../domain/streak'
 import { makeUnwornContext } from '../domain/unworn'
@@ -21,6 +22,8 @@ import { Sheet } from '../ui/Sheet'
 import { useToast } from '../ui/Toast'
 import { useToday } from '../ui/useToday'
 import { RediscoveryCard, useSkippedToday } from './RediscoveryCard'
+import { NudgeCard } from './NudgeCard'
+import { useNudges } from './useNudges'
 
 const COLLAPSED = 12
 
@@ -131,6 +134,7 @@ export function TodayScreen() {
     () => (outfits ?? []).map((o) => ({ ...o, itemIds: o.itemIds.filter((id) => wearableIds.has(id)) })).filter((o) => o.itemIds.length > 0),
     [outfits, wearableIds],
   )
+  const nudges = useNudges()
   const skipped = useSkippedToday(today)
   const rediscovery = useMemo(() => {
     // judged on wears up to yesterday, so wearing the piece today keeps it on the card
@@ -138,6 +142,7 @@ export function TodayScreen() {
     const ctx = makeUnwornContext(today, before, items ?? [])
     return pickRediscovery(items ?? [], buildWearIndex(before), wornOn(allWears, today), ctx, skipped)
   }, [items, allWears, today, skipped])
+  const nudge = nudges ? todaysNudge(nudges.all, rediscovery?.item.id) : null
   const loggedList = [...logged].filter((id) => wearableIds.has(id))
   const matchesOutfit = usableOutfits.some((o) => o.itemIds.length === loggedList.length && o.itemIds.every((id) => logged.has(id)))
 
@@ -298,6 +303,13 @@ export function TodayScreen() {
         <Button variant="quiet" block className="mt-2 text-mak" onClick={openOutfitSheet}>
           {t('today.saveOutfit')}
         </Button>
+      )}
+
+      {/* below the grid, so logging always comes first */}
+      {isToday && nudge && (
+        <div className="mt-8">
+          <NudgeCard nudge={nudge} today={today} />
+        </div>
       )}
 
       <Sheet open={outfitSheet} title={t('outfits.sheetTitle')} onClose={() => setOutfitSheet(false)}>

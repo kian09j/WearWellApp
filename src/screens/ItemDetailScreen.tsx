@@ -9,7 +9,10 @@ import { Button } from '../ui/Button'
 import { ColourDot, ItemThumb } from '../ui/ItemThumb'
 import { TopBar, useBack } from '../ui/TopBar'
 import { useToast } from '../ui/Toast'
+import { useToday } from '../ui/useToday'
 import { CpwCard } from './CpwCard'
+import { NudgeCard } from './NudgeCard'
+import { useNudges } from './useNudges'
 import { WearHistory } from './WearHistory'
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
@@ -27,6 +30,8 @@ export function ItemDetailScreen() {
   const wears = useWears()
   const back = useBack()
   const toast = useToast()
+  const today = useToday()
+  const nudge = useNudges()?.byItem.get(id ?? '')
 
   const stat = useMemo(() => (id ? wearStat(buildWearIndex(wears ?? []), id) : undefined), [wears, id])
 
@@ -109,6 +114,12 @@ export function ItemDetailScreen() {
         )}
 
         {item.kind === 'owned' && <CpwCard item={item} wears={stat?.count ?? 0} lastWorn={stat?.last} />}
+
+        {nudge && !nudge.snoozed && (
+          <div className="mt-5">
+            <NudgeCard nudge={nudge} today={today} showThumb={false} />
+          </div>
+        )}
 
         <dl className="card-soft mt-5 px-5 py-1 text-[15px]">
           {item.kind === 'wishlist' && item.price && <Fact label={t('item.price')}>{formatMoney(item.price)}</Fact>}

@@ -22,6 +22,7 @@ import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Wordmark } from '../ui/Flower'
 import { Screen } from '../ui/Screen'
 import { useToast } from '../ui/Toast'
+import { NudgeSettings } from './NudgeSettings'
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -117,6 +118,12 @@ export function SettingsScreen() {
           </select>
         </div>
       </Section>
+
+      {settings && (
+        <Section title={t('settings.nudges')}>
+          <NudgeSettings key={Object.values(settings.nudgeDays).join()} settings={settings} />
+        </Section>
+      )}
 
       <Section title={t('settings.data')}>
         <p className="border-b border-thread bg-tint-mieta/60 px-5 py-4 text-[14px] leading-relaxed text-ink/80">

@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: Settings = {
   currency: 'PLN',
   vintedCountry: 'pl',
   listingLanguage: 'pl',
+  nudgesEnabled: true,
   nudgeDays: { stage1: 30, stage2: 60, stage3: 90 },
   targetCpw: {},
   coolingOff: true,

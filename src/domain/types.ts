@@ -142,6 +142,7 @@ export interface Settings {
   currency: CurrencyCode
   vintedCountry: string
   listingLanguage: 'en' | 'pl'
+  nudgesEnabled: boolean
   nudgeDays: NudgeThresholds
   /** Target cost per wear per category, in the default currency. */
   targetCpw: Partial<Record<CategoryId, number>>
