@@ -41,7 +41,15 @@ export default defineConfig({
       workbox: {
         // everything the app needs to start offline; fonts only in the Latin subsets (Polish included)
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        globIgnores: ['**/*cyrillic*', '**/*greek*', '**/*vietnamese*', '**/*math*', '**/*symbols*'],
+        // the background remover is left out: it is fetched on first use and cached below
+        globIgnores: ['**/*cyrillic*', '**/*greek*', '**/*vietnamese*', '**/*math*', '**/*symbols*', '**/cutout.worker-*.js'],
+        runtimeCaching: [
+          {
+            urlPattern: ({ url, sameOrigin }) => sameOrigin && /\/assets\/(cutout\.worker|ort-wasm)/.test(url.pathname),
+            handler: 'CacheFirst',
+            options: { cacheName: 'background-remover', expiration: { maxEntries: 4 } },
+          },
+        ],
         navigateFallback: 'index.html',
         navigateFallbackDenylist: [/^\/privacy/],
         cleanupOutdatedCaches: true,
@@ -50,6 +58,14 @@ export default defineConfig({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+  },
+  // the background remover's worker (src/platform/cutout.worker.ts) is a module worker
+  worker: {
+    format: 'es',
+  },
+  // pre-bundling breaks how onnxruntime-web loads its WebAssembly
+  optimizeDeps: {
+    exclude: ['onnxruntime-web'],
   },
   test: {
     environment: 'node',

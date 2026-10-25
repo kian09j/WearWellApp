@@ -3,7 +3,7 @@ import type { NewPhoto } from '../data'
 
 export class ImageError extends Error {}
 
-function toBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
+export function toBlob(canvas: HTMLCanvasElement, type: string, quality: number): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality))
 }
 

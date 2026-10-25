@@ -13,7 +13,7 @@ export {
   type ItemPatch,
   type NewItem,
 } from './items'
-export { deletePhoto, savePhoto, type NewPhoto } from './photos'
+export { deletePhoto, getPhoto, savePhoto, type NewPhoto } from './photos'
 export { listWears, logMany, logWear, unlogMany, unlogWear } from './wears'
 export { deleteOutfit, getOutfit, listOutfits, restoreOutfit, saveOutfit, updateOutfit } from './outfits'
 export { DEFAULT_SETTINGS, getSettings, updateSettings } from './settings'

@@ -4,7 +4,7 @@ Wear what you love. Buy better, not more.
 
 WearWell ([wearwellapp.com](https://www.wearwellapp.com)) is a wardrobe tracker by [Polska Picks](https://polskapicks.com). It helps people wear what they already own, see the real cost per wear of their clothes, and resell what they no longer use. Everything is stored on the device: no account, no tracking.
 
-Status: **Phase 1 complete**. Phase 2: CSV import and AI photo scan done (the scan switches on once an API key is added); background removal not started.
+Status: **Phase 1 complete**. Phase 2 complete: CSV import, AI photo scan (switches on once an API key is added) and background removal.
 
 ## What it does
 
@@ -17,6 +17,7 @@ Status: **Phase 1 complete**. Phase 2: CSV import and AI photo scan done (the sc
 - **Before you buy**: projected cost per wear after 3, 6 and 12 months, similar pieces already owned, and a wishlist with an optional seven-day cooling-off.
 - **Stats**: most and least worn, best value, cost per wear by category, colours, wardrobe value, share worn in the last 90 days, money recovered.
 - **Photo scan** (optional): photograph a shelf or rail, Claude lists the pieces it sees, and you check and edit every row before anything is added.
+- **Background removal** (optional): one tap in the piece editor cuts the piece out of its photo, on the phone itself, and "Bring the background back" undoes it. The piece then sits on a wash of its colour in the wardrobe.
 - **Works offline** (installable PWA) and ships as **iOS and Android apps** (Capacitor) with an optional daily reminder.
 - **Backup**: export / import everything, photos included, as one file.
 - **CSV import** from other wardrobe apps or a spreadsheet: columns matched automatically (English and Polish headers), categories, colours, dates and prices understood loosely, a preview before anything is saved, duplicates skipped, and Undo. "Times worn" counts towards cost per wear as wears from before WearWell. A template is included.
@@ -110,6 +111,24 @@ With Claude Opus 5.5 ($4 per million input tokens, $20 per million output tokens
 
 The plain dev server has no functions. Run `npx vercel dev` (after `npx vercel link` and `npx vercel env pull`) to run the app and the function together, or point a dev build at a deployed site with `VITE_SCAN_API_URL=https://<your-preview>.vercel.app/api/scan npm run dev`.
 
+## Background removal (on the device)
+
+Nothing is uploaded: the model runs on the phone. The code is in three places:
+
+- `src/domain/cutout.ts`: the maths (pixels into the model's input, its output into transparency, and whether a cutout is worth offering). Unit tested.
+- `src/platform/cutout.worker.ts`: runs the model in a Web Worker so the screen stays responsive. It downloads the model the first time and keeps it in its own IndexedDB database, `wearwell-models`, which backups and "Erase everything" leave alone.
+- `src/platform/backgroundRemoval.ts`: the canvas work around it, and the result as WebP with transparency (PNG where the browser cannot write WebP, which includes Safari and the iOS app, so those files are bigger).
+
+**The model** is U²-Net small (`u2netp`, Apache 2.0, 4.6 MB). It takes a 320 × 320 image and runs on the processor with [onnxruntime-web](https://onnxruntime.ai) (MIT, WebAssembly, one thread). It is fetched from Hugging Face, pinned to one revision (`MODEL_URL` in the worker). To avoid that request, put the `.onnx` file in `public/` and point `MODEL_URL` at it.
+
+**Downloads**: the first cutout downloads the model (4.6 MB). The web version also fetches the WebAssembly runtime from the site (14 MB, about 3.7 MB compressed); the native apps ship it inside the app. Neither is part of the offline precache, so people who never remove a background never download them; the service worker caches them on first use, so it works offline afterwards.
+
+**Speed**: about 1 second per photo on a recent Mac. Not yet measured on phones. The very first cutout on a device is slower while the browser compiles the runtime.
+
+**Models that were tried and not used**: BiRefNet lite (MIT) does not run in the browser (fixed 1024px input, runs out of memory). ormbg and ISNet (88 MB each in half precision, need WebGPU) gave similar results at thumbnail size for 20 times the download. `@imgly/background-removal` is AGPL and Bria's RMBG models are non-commercial, so both are ruled out.
+
+**Dev note**: `optimizeDeps.exclude: ['onnxruntime-web']` in `vite.config.ts` is needed, because Vite's pre-bundling breaks how the runtime loads its WebAssembly.
+
 ## App store checklist
 
 - **Accounts**: Apple Developer Program ($99 a year) and Google Play Console ($25 once). Apple asks EU distributors for a trader status declaration (traders' contact details are shown on the store page).
@@ -185,4 +204,4 @@ Phase 2:
 
 - ✅ CSV import (Settings → Your data, the Wardrobe empty state, or the welcome screen)
 - ✅ Wardrobe photo scan (Claude, via one serverless function; needs the API key above)
-- Background removal
+- ✅ Background removal (on the device, U²-Net small)

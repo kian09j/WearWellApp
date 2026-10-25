@@ -41,6 +41,8 @@ export function ItemThumb({ item, iconSize = 44, fit = 'cover' }: ItemThumbProps
         alt=""
         loading="lazy"
         className={`h-full w-full ${fit === 'cover' ? 'object-cover' : 'object-contain'}`}
+        // shows through photos whose background was removed
+        style={{ background: colourWash(item) }}
       />
     )
   }
