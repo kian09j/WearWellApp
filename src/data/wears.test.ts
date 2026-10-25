@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { wearId } from '../domain/ids'
 import { db } from './db'
 import { addItem } from './items'
 import { listWears, logMany, logWear, unlogMany, unlogWear } from './wears'
@@ -22,6 +23,7 @@ describe('wear logging', () => {
     expect(await listWears()).toHaveLength(0)
     const again = await logWear(id, '2026-10-10')
     expect(again).toBe(first)
+    expect(first).toBe(wearId(id, '2026-10-10')) // the same id on every device
     expect(await listWears()).toHaveLength(1)
     expect(await db.wears.count()).toBe(1)
   })

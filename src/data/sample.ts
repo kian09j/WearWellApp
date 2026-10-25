@@ -11,7 +11,7 @@ import type {
   WearLog,
 } from '../domain/types'
 import { addDays, fromDateKey, isInSeason, today as todayKey } from '../domain/dates'
-import { newId } from '../domain/ids'
+import { newId, wearId } from '../domain/ids'
 import { db } from './db'
 import { makeItem } from './items'
 import { getSettings, updateSettings } from './settings'
@@ -180,7 +180,7 @@ export function buildSampleData(today: DateKey, currency: CurrencyCode): SampleD
   const wears: WearLog[] = []
   const log = (itemId: string, date: DateKey, outfitId?: string) => {
     const at = atTime(date, 20)
-    wears.push({ id: newId(), itemId, date, ...(outfitId ? { outfitId } : {}), sample: true, createdAt: at, updatedAt: at })
+    wears.push({ id: wearId(itemId, date), itemId, date, ...(outfitId ? { outfitId } : {}), sample: true, createdAt: at, updatedAt: at })
   }
 
   let missed = 0

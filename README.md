@@ -163,6 +163,8 @@ android/ ios/  Capacitor native projects.
 - Every record has an `id`, `createdAt`, `updatedAt` and an optional `deletedAt`. Deleting marks a record as deleted instead of removing it (Undo works, and a future sync backend such as Supabase gets the tombstones it needs).
 - Screens only import from `src/data/index.ts`, never from Dexie, so a sync layer can sit behind those functions without touching screens.
 - Wear dates are local `YYYY-MM-DD` strings, never UTC timestamps, so a wear logged at 23:30 never lands on the wrong day.
+- A wear's id is its piece and day (`wearId` in `src/domain/ids.ts`), so two devices logging the same wear agree on it. Database version 2 re-keyed older wears, and restoring an older backup re-keys its wears too.
+- Settings that would follow the person to other devices (`SYNCED_SETTINGS` in `src/data/settings.ts`) have their own `prefsUpdatedAt`. Per-device changes, like skipping the rediscovery card, only move `updatedAt`.
 - Photos are resized to 800px and re-encoded (WebP, JPEG where WebP isn't available), which also strips location data. They're stored as raw bytes, which works in every browser and WebView.
 - Export is one JSON file, photos included. Import validates every record first and replaces the data in one transaction, so a broken file can never leave things half-imported.
 

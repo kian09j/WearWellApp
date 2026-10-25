@@ -3,7 +3,7 @@ import { isCategoryId } from '../domain/categories'
 import { isColourId } from '../domain/colours'
 import { isDateKey } from '../domain/dates'
 import { isMoney } from '../domain/money'
-import { nowIso } from '../domain/ids'
+import { nowIso, rekeyWears } from '../domain/ids'
 import { alive, db } from './db'
 import { withDefaults } from './settings'
 
@@ -177,7 +177,7 @@ export async function restoreBackup(backup: BackupFile): Promise<void> {
   await db.transaction('rw', [db.items, db.wears, db.outfits, db.photos, db.settings], async () => {
     await Promise.all([db.items.clear(), db.wears.clear(), db.outfits.clear(), db.photos.clear(), db.settings.clear()])
     await db.items.bulkAdd(backup.data.items)
-    await db.wears.bulkAdd(backup.data.wears)
+    await db.wears.bulkAdd(rekeyWears(backup.data.wears)) // backups from before fixed wear ids have random ones
     await db.outfits.bulkAdd(backup.data.outfits)
     await db.photos.bulkAdd(photos)
     await db.settings.put({ ...withDefaults(backup.data.settings ?? undefined), onboarded: true })

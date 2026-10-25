@@ -1,5 +1,5 @@
 import type { DateKey, WearLog } from '../domain/types'
-import { newId, nowIso } from '../domain/ids'
+import { nowIso, wearId } from '../domain/ids'
 import { alive, db } from './db'
 
 // One wear per item per day. Logging again revives an undone log instead of
@@ -15,7 +15,7 @@ export async function logWear(itemId: string, date: DateKey, outfitId?: string):
       }
       return existing.id
     }
-    const log: WearLog = { id: newId(), itemId, date, outfitId, sample: false, createdAt: now, updatedAt: now }
+    const log: WearLog = { id: wearId(itemId, date), itemId, date, outfitId, sample: false, createdAt: now, updatedAt: now }
     await db.wears.add(log)
     return log.id
   })

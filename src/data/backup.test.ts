@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import type { WearLog } from '../domain/types'
+import { wearId } from '../domain/ids'
 import { BackupError, createBackup, eraseEverything, parseBackup, restoreBackup } from './backup'
 import { db } from './db'
 import { addItem, deleteItem, listItems, updateItem } from './items'
@@ -47,6 +49,21 @@ describe('backup', () => {
     expect((await getSettings()).currency).toBe('EUR')
     const photo = await db.photos.get('p1')
     expect(Array.from(new Uint8Array(photo!.bytes))).toEqual([1, 2, 3, 250])
+  })
+
+  it('gives wears from older backups fixed ids, one per piece and day', async () => {
+    await seedSmallWardrobe()
+    const backup = await createBackup()
+    const [first, second] = backup.data.wears as [WearLog, WearLog]
+    backup.data.wears = [
+      { ...first, id: 'random-1' },
+      { ...first, id: 'random-duplicate', updatedAt: '2020-01-01T00:00:00.000Z' },
+      { ...second, id: 'random-2' },
+    ]
+    await restoreBackup(parseBackup(JSON.stringify(backup)))
+    const wears = await listWears()
+    expect(wears).toHaveLength(2)
+    expect(wears.every((w) => w.id === wearId(w.itemId, w.date))).toBe(true)
   })
 
   it('rejects files that are not WearWell backups', () => {

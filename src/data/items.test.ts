@@ -45,12 +45,13 @@ describe('items', () => {
     const p2 = await savePhoto(photo())
     await updateItem(old, { photoId: p1 })
     await updateItem(recent, { photoId: p2 })
-    await db.items.update(old, { deletedAt: '2026-08-01T10:00:00.000Z' })
+    await db.items.update(old, { deletedAt: '2026-08-01T10:00:00.000Z', updatedAt: '2026-08-01T10:00:00.000Z' })
     await db.items.update(recent, { deletedAt: '2026-10-05T10:00:00.000Z' })
 
     expect(await purgeDeletedPhotos(30, new Date('2026-10-10T12:00:00Z'))).toBe(1)
     expect(await db.photos.get(p1)).toBeUndefined()
     expect(await db.photos.get(p2)).toBeDefined()
     expect((await db.items.get(old))?.photoId).toBeUndefined()
+    expect((await db.items.get(old))?.updatedAt).toBe('2026-10-10T12:00:00.000Z') // so the change would sync
   })
 })

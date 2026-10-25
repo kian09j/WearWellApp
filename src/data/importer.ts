@@ -1,6 +1,6 @@
 import type { WearLog } from '../domain/types'
 import type { ImportPiece } from '../domain/csvImport'
-import { newId, nowIso } from '../domain/ids'
+import { nowIso, wearId } from '../domain/ids'
 import { db } from './db'
 import { makeItem } from './items'
 
@@ -11,7 +11,7 @@ export async function importPieces(pieces: readonly ImportPiece[]): Promise<stri
     const items = pieces.map((p) => makeItem({ ...p.item }, now))
     const wears: WearLog[] = []
     pieces.forEach((p, i) => {
-      if (p.lastWorn) wears.push({ id: newId(), itemId: items[i]!.id, date: p.lastWorn, sample: false, createdAt: now, updatedAt: now })
+      if (p.lastWorn) wears.push({ id: wearId(items[i]!.id, p.lastWorn), itemId: items[i]!.id, date: p.lastWorn, sample: false, createdAt: now, updatedAt: now })
     })
     await db.items.bulkAdd(items)
     await db.wears.bulkAdd(wears)

@@ -60,7 +60,7 @@ export async function purgeDeletedPhotos(days = 30, now = new Date()): Promise<n
     const stale = await db.items.filter((i) => !!i.deletedAt && i.deletedAt < cutoff && !!i.photoId).toArray()
     for (const item of stale) {
       await db.photos.delete(item.photoId!)
-      await db.items.update(item.id, { photoId: undefined })
+      await db.items.update(item.id, { photoId: undefined, updatedAt: now.toISOString() })
     }
     return stale.length
   })

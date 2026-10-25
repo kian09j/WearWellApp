@@ -158,4 +158,9 @@ export interface Settings {
   /** Pieces skipped with "Not today" on the rediscovery card, reset each day. */
   rediscovery?: { date: DateKey; skipped: string[] }
   updatedAt: Timestamp
+  /**
+   * When a setting that would follow the person to other devices last changed (SYNCED_SETTINGS).
+   * Per-device changes, like skipping the rediscovery card, only move updatedAt.
+   */
+  prefsUpdatedAt: Timestamp
 }

@@ -1,6 +1,6 @@
 # Optional account, backup and sync: plan
 
-Status: **plan only, nothing built**. Written 25 October 2026; prices checked the same day. The app must keep working fully without an account: the account only adds backup and sync across devices (phone and laptop, or a reinstall).
+Status: **plan only; Phase 0 done** (25 October 2026: fixed wear ids, `prefsUpdatedAt`, the photo clean-up fix). Written 25 October 2026; prices checked the same day. The app must keep working fully without an account: the account only adds backup and sync across devices (phone and laptop, or a reinstall).
 
 ## 1. Recommendation in short
 
@@ -73,7 +73,7 @@ Because `data` is an opaque blob, app schema changes need no server migration, a
 
 **Is "newest record wins" enough?** Yes. It is one person on two devices, so editing the same piece on both while offline is rare, and losing one of those edits is acceptable.
 
-**Three fixes the current code needs first** (checked in the code):
+**Three fixes the code needed first** (done in Phase 0):
 
 - **Wear ids**: `logWear` in `src/data/wears.ts` already keeps one wear per piece per day on one device, but gives each new wear a random id (`newId()`). The same piece logged for the same day on two offline devices becomes two records, and `listWears` counts both. Fix: a `wearId(itemId, date)` function in `src/domain/ids.ts`, used by `wears.ts`, `importer.ts`, `sample.ts` and backup restore.
 - **Settings timestamp**: `updateSettings` in `src/data/settings.ts` bumps `updatedAt` on every change, including the daily "Not today" tap on the rediscovery card. That tap would overwrite preferences changed on the other device. Fix: a separate `prefsUpdatedAt`, set only when a synced setting changes.
@@ -149,7 +149,7 @@ Fixed costs do not change: Apple $99 a year, Google Play $25 once. Separately, c
 
 ## 6. Build plan
 
-- **Phase 0, now, about 1 day, no backend**: fixed wear ids and the Dexie v2 re-key, `prefsUpdatedAt`, the `purgeDeletedPhotos` fix, the clock-offset hook in `nowIso()`.
+- **Phase 0, done 25 October 2026**: fixed wear ids and the Dexie v2 re-key, `prefsUpdatedAt`, the `purgeDeletedPhotos` fix. The clock-offset hook in `nowIso()` moved to Phase 2, since it needs the server's time.
 - **Phase 1, 2 to 3 days**: Supabase project, migration, row-level security, `push_changes`, bucket, mail provider, email templates, database tests.
 - **Phase 2, 5 to 7 days**: sync engine, Dexie hooks, photo upload and download, triggers. Tests with two simulated devices, clock skew, offline edits and an interrupted push.
 - **Phase 3, 3 to 4 days**: account screens, first sign-in dialog, sign-out, deletion endpoint and page, texts.
@@ -171,7 +171,7 @@ Fixed costs do not change: Apple $99 a year, Google Play $25 once. Separately, c
 2. Email code only at launch? **Yes.**
 3. End-to-end encryption? **No for v1.**
 4. Default when signing out? **Keep the data on the device.**
-5. Do Phase 0 now? **Yes**, it is cheapest before real data exists.
+5. Do Phase 0 now? **Done.**
 6. Sync free or paid? **Free during beta**; revisit at about 1,000 accounts.
 7. Inactive accounts? **Keep until the person deletes them**; revisit at 1,000 accounts.
 
