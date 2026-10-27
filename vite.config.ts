@@ -58,6 +58,8 @@ export default defineConfig({
   ],
   define: {
     __APP_VERSION__: JSON.stringify(pkg.version),
+    // Vercel preview deployments (not the live site) may show reminders on demand: src/platform/preview.ts
+    __PREVIEW_BUILD__: JSON.stringify(process.env.VERCEL_ENV === 'preview'),
   },
   // the background remover's worker (src/platform/cutout.worker.ts) is a module worker
   worker: {

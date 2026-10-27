@@ -19,7 +19,8 @@ Status: **Phase 1 complete**. Phase 2 complete: CSV import, AI photo scan (switc
 - **Photo scan** (optional): photograph a shelf or rail, Claude lists the pieces it sees, and you check and edit every row before anything is added.
 - **Background removal** (optional): one tap in the piece editor cuts the piece out of its photo, on the phone itself, and "Bring the background back" undoes it. The piece then sits on a wash of its colour in the wardrobe.
 - **Works offline** (installable PWA) and ships as **iOS and Android apps** (Capacitor) with an optional daily reminder.
-- **Backup**: export / import everything, photos included, as one file.
+- **Backup**: export / import everything, photos included, as one file. A gentle reminder on Today asks for a first backup two weeks after someone's fifth piece of their own, then every 30 days ("Later" waits two weeks). On iPhone and iPad in Safari, a tip suggests adding WearWell to the Home Screen first, because Safari can clear a website's data after a while without a visit. A Home Screen app on iOS has its own storage, separate from Safari, so for someone who already has pieces the tip offers "Save backup" and explains restoring it from the welcome screen ("Have a backup? Restore it").
+- **Trying the reminders**: on a Vercel preview or the dev server, open `/?test-reminders` and both show straight away for that visit (`src/platform/preview.ts`). The live site ignores it.
 - **CSV import** from other wardrobe apps or a spreadsheet: columns matched automatically (English and Polish headers), categories, colours, dates and prices understood loosely, a preview before anything is saved, duplicates skipped, and Undo. "Times worn" counts towards cost per wear as wears from before WearWell. A template is included.
 
 ## Run it

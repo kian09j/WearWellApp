@@ -2,7 +2,8 @@ import { useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 import { Check, ChevronLeft, ChevronRight, ListChecks, Plus, Repeat, Search, Sparkles } from 'lucide-react'
 import type { DateKey, Outfit } from '../domain/types'
-import { loadSampleData, logMany, logWear, saveOutfit, unlogMany, unlogWear, useItems, useOutfits, useWears } from '../data'
+import { loadSampleData, logMany, logWear, saveOutfit, unlogMany, unlogWear, useItems, useOutfits, useSettings, useWears } from '../data'
+import { isBackupDue, TEST_BACKUP_RULES } from '../domain/backupReminder'
 import { normalizeSearch } from '../domain/catalogue'
 import { addDays, isDateKey } from '../domain/dates'
 import { homeGrid, isWearable, sameAsDayBefore, wornOn } from '../domain/logging'
@@ -13,6 +14,8 @@ import { makeUnwornContext } from '../domain/unworn'
 import { buildWearIndex } from '../domain/wearStats'
 import { formatDate, t } from '../i18n'
 import { tapFeedback } from '../platform/haptics'
+import { canAddToHomeScreen } from '../platform/homeScreen'
+import { testingReminders } from '../platform/preview'
 import { Button } from '../ui/Button'
 import { Field, TextInput } from '../ui/fields'
 import { Flower } from '../ui/Flower'
@@ -23,6 +26,8 @@ import { useToast } from '../ui/Toast'
 import { useToday } from '../ui/useToday'
 import { RediscoveryCard, useSkippedToday } from './RediscoveryCard'
 import { NudgeCard } from './NudgeCard'
+import { BackupReminderCard } from './BackupReminderCard'
+import { HomeScreenTip } from './HomeScreenTip'
 import { useNudges } from './useNudges'
 
 const COLLAPSED = 12
@@ -97,6 +102,7 @@ export function TodayScreen() {
   const items = useItems()
   const wears = useWears()
   const outfits = useOutfits()
+  const settings = useSettings()
   const today = useToday()
   const toast = useToast()
   const [params, setParams] = useSearchParams()
@@ -143,6 +149,10 @@ export function TodayScreen() {
     return pickRediscovery(items ?? [], buildWearIndex(before, items ?? []), wornOn(allWears, today), ctx, skipped)
   }, [items, allWears, today, skipped])
   const nudge = nudges ? todaysNudge(nudges.all, rediscovery?.item.id) : null
+  // keeping the wardrobe safe: the Home Screen tip first (iPhone Safari), otherwise the backup reminder
+  const testing = testingReminders()
+  const homeScreenTip = !!settings && !settings.homeScreenTipDismissed && (canAddToHomeScreen() || testing)
+  const backupDue = !!settings && !homeScreenTip && isBackupDue(items ?? [], settings, today, testing ? TEST_BACKUP_RULES : undefined)
   const loggedList = [...logged].filter((id) => wearableIds.has(id))
   const matchesOutfit = usableOutfits.some((o) => o.itemIds.length === loggedList.length && o.itemIds.every((id) => logged.has(id)))
 
@@ -306,6 +316,16 @@ export function TodayScreen() {
       )}
 
       {/* below the grid, so logging always comes first */}
+      {isToday && homeScreenTip && (
+        <div className="mt-8">
+          <HomeScreenTip hasOwnPieces={(items ?? []).some((i) => i.kind === 'owned' && !i.sample)} />
+        </div>
+      )}
+      {isToday && backupDue && settings && (
+        <div className="mt-8">
+          <BackupReminderCard settings={settings} today={today} />
+        </div>
+      )}
       {isToday && nudge && (
         <div className="mt-8">
           <NudgeCard nudge={nudge} today={today} />

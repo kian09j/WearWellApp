@@ -41,6 +41,7 @@ Status: **plan only; Phase 0 done** (25 October 2026: fixed wear ids, `prefsUpda
 - `aiConsentAt` (asked once per device; cleaner evidence of consent)
 - `reminder` (the notification is scheduled per device)
 - `onboarded` and `rediscovery` (daily, per-device state)
+- `lastBackupAt`, `backupReminderSnoozedUntil` and `homeScreenTipDismissed` (about this device's own backup and browser)
 - the background remover's model cache (`wearwell-models` database)
 
 **Server** (`supabase/migrations/001_sync.sql`):

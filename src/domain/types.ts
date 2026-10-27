@@ -157,6 +157,12 @@ export interface Settings {
   aiConsentAt?: Timestamp
   /** Pieces skipped with "Not today" on the rediscovery card, reset each day. */
   rediscovery?: { date: DateKey; skipped: string[] }
+  /** When this device last saved a backup file. */
+  lastBackupAt?: Timestamp
+  /** "Later" on the backup reminder hides it until this day. */
+  backupReminderSnoozedUntil?: DateKey
+  /** The "Add to Home Screen" tip was closed (iPhone and iPad, web version only). */
+  homeScreenTipDismissed?: boolean
   updatedAt: Timestamp
   /**
    * When a setting that would follow the person to other devices last changed (SYNCED_SETTINGS).

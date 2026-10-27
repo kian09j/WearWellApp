@@ -41,6 +41,7 @@ const en = {
     empty: 'Start with an empty wardrobe',
     privacy: 'Everything stays on your phone. No account needed.',
     importCsv: 'Coming from another app? Import a CSV',
+    restoreBackup: 'Have a backup? Restore it',
   },
 
   quickCount: {
@@ -316,6 +317,27 @@ const en = {
     soldNoPrice: 'Marked as sold.',
     recovered: 'Money recovered from sales so far: {amount}',
     statusNow: 'Right now: {status}',
+  },
+
+  backupReminder: {
+    eyebrow: 'Backup',
+    titleFirst: 'Save a backup of your wardrobe',
+    titleAgain: 'Time for a fresh backup',
+    bodyFirst: 'Your wardrobe is saved only on this device. A backup file keeps your pieces, wears and photos safe if it is lost or replaced.',
+    bodyAgain: 'Your last backup was on {date}. Save a new one so it has everything since then.',
+    save: 'Save backup',
+    later: 'Later',
+    snoozed: 'Reminder snoozed for two weeks',
+  },
+
+  homeScreenTip: {
+    eyebrow: 'Keep your wardrobe safe',
+    title: 'Add WearWell to your Home Screen',
+    body: 'Safari can clear a website’s saved data if you do not open it for a while. A Home Screen app keeps its own data and opens like an app.',
+    moveBody: 'The Home Screen app starts empty, because your wardrobe does not move over by itself. Save a backup here first, then open WearWell from your Home Screen and choose "Have a backup? Restore it".',
+    steps: 'In Safari, tap Share (on newer iPhones it is under •••), then "Add to Home Screen".',
+    saveBackup: 'Save backup',
+    gotIt: 'Got it',
   },
 
   rediscovery: {
@@ -606,6 +628,7 @@ const en = {
     dataPrivacy: 'Everything stays on this device. No account, no tracking. Export a backup now and then so you never lose your wardrobe.',
     export: 'Export backup',
     exportHint: 'Saves everything, photos included, as one file.',
+    lastBackup: 'Last saved on {date}.',
     exported: 'Backup saved',
     import: 'Import backup',
     importHint: 'Replaces what is on this device with a backup file.',

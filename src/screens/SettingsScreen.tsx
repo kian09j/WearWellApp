@@ -3,8 +3,6 @@ import { Download, ExternalLink, FileSpreadsheet, Sparkles, Trash2, Upload, X } 
 import { useNavigate } from 'react-router'
 import {
   BackupError,
-  backupFileName,
-  createBackup,
   eraseEverything,
   getSettings,
   loadSampleData,
@@ -23,11 +21,12 @@ import { formatRegion, formatTimestamp, t } from '../i18n'
 import { openExternal } from '../platform/external'
 import { isNative } from '../platform/native'
 import { allowReminders, cancelDailyReminder, scheduleDailyReminder } from '../platform/reminders'
-import { pickFile, saveTextFile } from '../platform/files'
+import { pickFile } from '../platform/files'
 import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { Wordmark } from '../ui/Flower'
 import { Screen } from '../ui/Screen'
 import { useToast } from '../ui/Toast'
+import { useSaveBackup } from './useSaveBackup'
 import { NudgeSettings } from './NudgeSettings'
 import { ReminderSettings } from './ReminderSettings'
 
@@ -73,15 +72,7 @@ export function SettingsScreen() {
   const [pendingImport, setPendingImport] = useState<BackupFile | null>(null)
   const [confirmErase, setConfirmErase] = useState(false)
 
-  const exportBackup = async () => {
-    const backup = await createBackup()
-    try {
-      await saveTextFile(backupFileName(), JSON.stringify(backup))
-      toast(t('settings.exported'))
-    } catch {
-      // the share sheet was closed without choosing anywhere to save: nothing to say
-    }
-  }
+  const saveBackup = useSaveBackup()
 
   const chooseImport = async () => {
     const file = await pickFile('.json,application/json')
@@ -217,7 +208,16 @@ export function SettingsScreen() {
         <p className="border-b border-thread bg-tint-mieta/60 px-5 py-4 text-[14px] leading-relaxed text-ink/80">
           {t('settings.dataPrivacy')}
         </p>
-        <ActionRow icon={<Download size={18} />} title={t('settings.export')} hint={t('settings.exportHint')} onClick={exportBackup} />
+        <ActionRow
+          icon={<Download size={18} />}
+          title={t('settings.export')}
+          hint={
+            settings?.lastBackupAt
+              ? `${t('settings.exportHint')} ${t('settings.lastBackup', { date: formatTimestamp(settings.lastBackupAt) })}`
+              : t('settings.exportHint')
+          }
+          onClick={() => void saveBackup()}
+        />
         <ActionRow icon={<Upload size={18} />} title={t('settings.import')} hint={t('settings.importHint')} onClick={chooseImport} />
         <ActionRow icon={<FileSpreadsheet size={18} />} title={t('settings.importCsv')} hint={t('settings.importCsvHint')} onClick={() => navigate('/import')} />
       </Section>

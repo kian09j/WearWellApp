@@ -1,9 +1,11 @@
 import { Link, useNavigate } from 'react-router'
-import { loadSampleData, updateSettings, useSettings } from '../data'
+import { BackupError, loadSampleData, parseBackup, restoreBackup, updateSettings, useSettings } from '../data'
 import { CURRENCIES, isCurrencyCode } from '../domain/money'
 import { t, type TKey } from '../i18n'
+import { pickFile } from '../platform/files'
 import { Button } from '../ui/Button'
 import { Flower, Wordmark } from '../ui/Flower'
+import { useToast } from '../ui/Toast'
 
 const POINTS: { key: TKey; petal: string }[] = [
   { key: 'welcome.point1', petal: 'var(--color-koniczyna)' },
@@ -14,6 +16,7 @@ const POINTS: { key: TKey; petal: string }[] = [
 export function WelcomeScreen() {
   const settings = useSettings()
   const navigate = useNavigate()
+  const toast = useToast()
 
   const exploreSample = async () => {
     await loadSampleData()
@@ -23,6 +26,21 @@ export function WelcomeScreen() {
   const startEmpty = async () => {
     await updateSettings({ onboarded: true })
     navigate('/wardrobe', { replace: true })
+  }
+
+  // a new phone, or the Home Screen app on iPhone (which starts with its own empty storage)
+  const restore = async () => {
+    const file = await pickFile('.json,application/json')
+    if (!file) return
+    try {
+      await restoreBackup(parseBackup(await file.text()))
+    } catch (err) {
+      if (!(err instanceof BackupError)) console.error(err)
+      toast(t('settings.importFailed'))
+      return
+    }
+    toast(t('settings.imported'))
+    navigate('/', { replace: true })
   }
 
   return (
@@ -81,6 +99,9 @@ export function WelcomeScreen() {
         <Link to="/import" className="text-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
           {t('welcome.importCsv')}
         </Link>
+        <button type="button" onClick={() => void restore()} className="text-center text-[14px] font-semibold text-ink/75 underline underline-offset-4">
+          {t('welcome.restoreBackup')}
+        </button>
         <p className="mt-2 text-center text-[13px] text-muted">{t('welcome.privacy')}</p>
       </div>
     </div>
