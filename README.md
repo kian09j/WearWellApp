@@ -25,7 +25,7 @@ Status: **Phase 1 complete**. Phase 2 complete: CSV import, AI photo scan (switc
 
 ## Run it
 
-You need Node.js 20 or newer.
+You need Node.js 22.12 or newer, on an even-numbered release (22, 24 or 26; Node 24 LTS is a good choice). Vite 8 would run on 20.19, but the tests (Vitest 5) need 22.12 or later. On an older Node, `npm install` skips a native part Vite needs and the dev server fails to start.
 
 ```bash
 npm install
